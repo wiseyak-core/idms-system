@@ -1,11 +1,5 @@
+import { DatasetTableProps } from '@/model'
 import { Button, Flex, Table } from 'antd'
-
-type DatasetTableProps = {
-    id: string
-    name: string
-    url: string
-    uploadedAt: string
-}
 
 const datasetTableData: DatasetTableProps[] = [
     {
