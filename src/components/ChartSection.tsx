@@ -1,6 +1,7 @@
 import { SORT } from '@/constant'
 import { QuadrimesterExpenseProps } from '@/model'
 import { quadrimesterExpenseChart } from '@/utils/highChartConverter'
+import { sortData } from '@/utils/sortData'
 import { Card, Flex, Select } from 'antd'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
@@ -16,7 +17,13 @@ const ChartSection = ({
     const [searchParams] = useSearchParams()
     const quarter = searchParams.get('quarter')
     const coreData = chartData.data
-    const structuredData = quadrimesterExpenseChart(coreData, quarter)
+    const filteredData = coreData.filter((item: any) => item['शीर्षक'] !== null)
+
+    const sortedData = sortData(filteredData, sort, quarter)
+
+    const structuredData = quadrimesterExpenseChart(sortedData, quarter)
+
+    console.log(structuredData)
 
     const sortOptions = SORT.map((item) => ({
         value: item,
@@ -53,7 +60,7 @@ const ChartSection = ({
                         size="middle"
                         showSearch
                         style={{ width: 200 }}
-                        placeholder="Select a year"
+                        placeholder="Select sort"
                         filterOption={(input, option) =>
                             (option?.label ?? '')
                                 .toLowerCase()

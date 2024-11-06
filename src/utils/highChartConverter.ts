@@ -5,7 +5,6 @@ export const quadrimesterExpenseChart = (
     data: QuadrimesterExpenseType[],
     quarter: string | null
 ) => {
-    const totalLength = data.length
     const categories = data.map((item) => item['शीर्षक'])
 
     let series: SeriesOptionsType[] = []
@@ -111,8 +110,6 @@ export const quadrimesterExpenseChart = (
             categories: categories,
             startOnTick: false,
             endOnTick: false,
-            min: 0,
-            max: totalLength - 2,
         },
         yAxis: {
             title: {

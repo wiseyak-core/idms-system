@@ -5,7 +5,7 @@ import '../index.css'
 import { useSearchParams } from 'react-router-dom'
 import { useState } from 'react'
 import { YEAR } from '@/constant/year'
-import { CHART_TYPE } from '@/constant/chartType'
+// import { CHART_TYPE } from '@/constant/chartType'
 import { QUARTER } from '@/constant/quarter'
 
 const FilterSection = () => {
@@ -14,16 +14,16 @@ const FilterSection = () => {
     const topics = searchParams.getAll('topics') || ''
     const cities = searchParams.getAll('cities') || ''
     const year = searchParams.get('year') || ''
-    const title = searchParams.get('title') || ''
-    const chartType = searchParams.get('chart_type') || ''
+    // const title = searchParams.get('title') || ''
+    // const chartType = searchParams.get('chart_type') || ''
     const quarter = searchParams.get('quarter') || ''
 
     const [selectedTopic, setSelectedTopics] = useState<string[]>(topics)
     const [selectedCities, setSelectedCities] = useState<string[]>(cities)
     const [selectedYear, setSelectedYear] = useState<string>(year)
-    const [selectedTitle, setSelectedTitle] = useState<string>(title)
-    const [selectedChartType, setSelectedChartType] =
-        useState<string>(chartType)
+    // const [selectedTitle, setSelectedTitle] = useState<string>(title)
+    // const [selectedChartType, setSelectedChartType] =
+    //     useState<string>(chartType)
     const [selectedQuarter, setSelectedQuarter] = useState<string>(quarter)
 
     const topicsOptions = TOPICS.map((topic) => ({
@@ -41,17 +41,17 @@ const FilterSection = () => {
         value: year,
     }))
 
-    const chartTypeOptions = CHART_TYPE.map((chartType) => ({
-        label: chartType,
-        value: chartType,
-    }))
+    // const chartTypeOptions = CHART_TYPE.map((chartType) => ({
+    //     label: chartType,
+    //     value: chartType,
+    // }))
 
-    const titleOptions = [
-        {
-            label: 'budget-expense',
-            value: 'budget-expense',
-        },
-    ]
+    // const titleOptions = [
+    //     {
+    //         label: 'budget-expense',
+    //         value: 'budget-expense',
+    //     },
+    // ]
 
     const quarterOptions = QUARTER.map((quarter) => ({
         label: quarter,
@@ -64,8 +64,8 @@ const FilterSection = () => {
             topics: selectedTopic,
             cities: selectedCities,
             year: selectedYear,
-            title: selectedTitle,
-            chart_type: selectedChartType,
+            // title: selectedTitle,
+            // chart_type: selectedChartType,
             quarter: selectedQuarter,
         })
     }
@@ -140,7 +140,7 @@ const FilterSection = () => {
                             options={yearOptions}
                         />
                     </Flex>
-                    <Flex vertical>
+                    {/* <Flex vertical>
                         <h3>Select Chart Type:</h3>
                         <Select
                             value={selectedChartType}
@@ -159,8 +159,8 @@ const FilterSection = () => {
                             }
                             options={chartTypeOptions}
                         />
-                    </Flex>
-                    <Flex vertical>
+                    </Flex> */}
+                    {/* <Flex vertical>
                         <h3>Select Title:</h3>
                         <Select
                             value={selectedTitle}
@@ -179,7 +179,7 @@ const FilterSection = () => {
                             }
                             options={titleOptions}
                         />
-                    </Flex>
+                    </Flex> */}
                     <Flex vertical>
                         <h3>Select Quarter:</h3>
                         <Select
