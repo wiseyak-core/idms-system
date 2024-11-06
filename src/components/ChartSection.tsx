@@ -1,57 +1,81 @@
-import { Card } from 'antd'
+import { SORT } from '@/constant'
+import { QuadrimesterExpenseProps } from '@/model'
+import { quadrimesterExpenseChart } from '@/utils/highChartConverter'
+import { sortData } from '@/utils/sortData'
+import { Card, Flex, Select } from 'antd'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
+import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 
-const ChartSection = () => {
-    // const { data } = useGraphStore()
+const ChartSection = ({
+    chartData,
+}: {
+    chartData: QuadrimesterExpenseProps
+}) => {
+    const [sort, setSort] = useState()
+    const [searchParams] = useSearchParams()
+    const quarter = searchParams.get('quarter')
+    const coreData = chartData.data
+    const filteredData = coreData.filter((item: any) => item['शीर्षक'] !== null)
 
-    // const inventoryValues = data?.reduce(
-    //     (acc, currentValue) =>
-    //         currentValue.Data_Category === 'Inventory'
-    //             ? acc + Number(currentValue.Value)
-    //             : acc,
-    //     0
-    // )
+    const sortedData = sortData(filteredData, sort, quarter)
 
-    // const financeValues = data?.reduce(
-    //     (acc, currentValue) =>
-    //         currentValue.Data_Category === 'Finance'
-    //             ? acc + Number(currentValue.Value)
-    //             : acc,
-    //     0
-    // )
+    const structuredData = quadrimesterExpenseChart(sortedData, quarter)
 
-    // const optionData = [
-    //     {
-    //         name: 'Inventory',
-    //         y: inventoryValues,
-    //     },
-    //     {
-    //         name: 'Finance',
-    //         y: financeValues,
-    //     },
-    // ]
+    console.log(structuredData)
 
-    // const options: Highcharts.Options = {
-    //     title: {
-    //         text: 'Pie Chart',
-    //     },
-    //     series: [
-    //         {
-    //             type: 'pie',
-    //             name: 'percentage',
-    //             data: optionData,
-    //         },
-    //     ],
-    // }
+    const sortOptions = SORT.map((item) => ({
+        value: item,
+        label: item,
+    }))
+
     return (
         <Card
             title="Charts"
             style={{
                 flexGrow: 1,
+                width: '100%',
+                display: 'flex',
+                height: '100%',
+                flexDirection: 'column',
             }}
         >
-            <HighchartsReact highcharts={Highcharts} options={{}} export />
+            <Flex
+                align="center"
+                justify="flex-start"
+                style={{
+                    marginBottom: 20,
+                }}
+            >
+                <Flex vertical>
+                    <h3>Select Sort:</h3>
+                    <Select
+                        value={sort}
+                        onChange={(value) => {
+                            setSort(value)
+                        }}
+                        popupClassName="capitalizeWords"
+                        rootClassName="capitalizeWords"
+                        size="middle"
+                        showSearch
+                        style={{ width: 200 }}
+                        placeholder="Select sort"
+                        filterOption={(input, option) =>
+                            (option?.label ?? '')
+                                .toLowerCase()
+                                .includes(input.toLowerCase())
+                        }
+                        options={sortOptions}
+                    />
+                </Flex>
+            </Flex>
+            <HighchartsReact
+                id="chart"
+                highcharts={Highcharts}
+                options={structuredData}
+                export
+            />
         </Card>
     )
 }
