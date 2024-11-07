@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.9.1",
+    "@kanaries/graphic-walker": "^0.4.73",
     "@tanstack/react-table": "^8.20.5",
     "antd": "^5.21.2",
     "axios": "^1.7.7",
@@ -22,6 +24,7 @@
     "react-hook-form": "^7.53.1",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.26.2",
+    "styled-components": "^6.1.13",
     "yup": "^1.4.0",
     "zustand": "^5.0.0-rc.2"
   },

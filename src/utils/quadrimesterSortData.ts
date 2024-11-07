@@ -10,7 +10,7 @@ type QuadrimesterExpenseKeys =
     | 'बजेट जम्मा'
     | 'खर्च जम्मा'
 
-export const sortData = (
+export const quadrimesterSortData = (
     data: QuadrimesterExpenseType[],
     sort: string | undefined,
     quarter: string | null

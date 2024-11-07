@@ -1,7 +1,7 @@
 import { QuadrimesterExpenseType } from '@/model'
 import { SeriesOptionsType } from 'highcharts'
 
-export const quadrimesterExpenseChart = (
+export const quadrimesterExpenseBarChart = (
     data: QuadrimesterExpenseType[],
     quarter: string | null
 ) => {
@@ -91,11 +91,6 @@ export const quadrimesterExpenseChart = (
                 type: 'y',
                 mouseWheel: {
                     enabled: true,
-                },
-            },
-            events: {
-                click: function (e) {
-                    console.log(e)
                 },
             },
         },
