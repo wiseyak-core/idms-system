@@ -45,3 +45,21 @@ export interface QuadrimesterExpenseProps {
     quarter: string
     data: QuadrimesterExpenseType[]
 }
+
+export interface BudgetExpenseProps {
+    'क्र.सं.': string
+    'बजेट उपशीर्षक संकेत': string
+    'बजेट उपशीर्षक नाम': string
+    'बजेट चालु': number
+    'बजेट पूंजीगत': number
+    'बजेट जम्मा': number
+    'खर्च चालु': number
+    'खर्च पूंजीगत': number
+    'खर्च जम्मा': number
+    'खर्च (%)': number
+    'मौज्दात चालु': number
+    'मौज्दात पूंजीगत': number
+    'मौज्दात जम्मा': number
+    city: string
+    month: string
+}

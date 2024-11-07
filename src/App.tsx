@@ -1,10 +1,11 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { UserPage } from './pages/UserPage'
+// import { UserPage } from './pages/UserPage'
 import { DashboardPage } from './pages/DashboardPage'
 import CategoryPage from './pages/CategoryPage'
 import { DashboardLayout } from './components/dashboard/DashboardLayout'
 import { DatasetPage } from './pages/DatasetPage'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { UserPage } from './pages/UserPage'
 
 const queryClient = new QueryClient()
 

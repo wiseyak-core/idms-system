@@ -1,6 +1,16 @@
 import { BASE_URL } from '@/constant'
-import { QuadrimesterExpenseProps } from '@/model'
+import { BudgetExpenseProps, QuadrimesterExpenseProps } from '@/model'
 import axios, { AxiosResponse } from 'axios'
+
+type GenericDataServiceProps = {
+    topic: string
+    city?: string
+    year?: string
+    quarter?: string
+    उपशीर्षक?: string
+    months?: string
+}
+
 export const getGenericDataService = ({
     topics,
     cities,
@@ -49,57 +59,80 @@ export const getGenericDataService = ({
     } else {
         return null
     }
-
-    // default:
-    //     const response = axios.get<ApiResponse>(BASE_URL + 'api/', {
-    //         params: {
-    //             topics: topics,
-    //             cities: cities,
-    //         },
-    //         paramsSerializer: (params) => {
-    //             return Object.keys(params)
-    //                 .map((key) => {
-    //                     const value = Array.isArray(params[key])
-    //                         ? params[key]
-    //                               .map(
-    //                                   (v) =>
-    //                                       `${key}=${encodeURIComponent(v)}`
-    //                               )
-    //                               .join('&')
-    //                         : `${key}=${encodeURIComponent(params[key])}`
-    //                     return value
-    //                 })
-    //                 .join('&')
-    //         },
-    //     })
-    //     return response
-    // }
 }
 
 export const getQuadrimesterExpenseService = ({
-    cities,
+    city,
     year,
-    title,
-    chart_type,
     quarter,
 }: {
-    cities: string
+    city: string
     year: string
-    title: string
     quarter: string
-    chart_type: string
 }): Promise<AxiosResponse<QuadrimesterExpenseProps>> => {
     const quadrimester_expense_response = axios.get<QuadrimesterExpenseProps>(
         BASE_URL + 'quadrimester_expense',
         {
             params: {
-                city: cities,
+                city: city,
                 year: year,
-                title: title,
-                chart_type: chart_type,
                 quarter: quarter,
             },
         }
     )
     return quadrimester_expense_response
+}
+
+export const useGenericAPIQuery = (props: GenericDataServiceProps) => {
+    const { topic, city, year, quarter, उपशीर्षक, months } = props
+
+    switch (topic) {
+        case 'quadrimester_expense':
+            const quadrimester_expense_response =
+                axios.get<QuadrimesterExpenseProps>(
+                    BASE_URL + 'quadrimester_expense',
+                    {
+                        params: {
+                            city: city,
+                            year: year,
+                            quarter: quarter,
+                        },
+                    }
+                )
+            return quadrimester_expense_response
+        case 'budget_expense':
+            const budget_expense_response = axios.get<QuadrimesterExpenseProps>(
+                BASE_URL + 'budget_expense',
+                {
+                    params: {
+                        city: city,
+                        month: months,
+                        उपशीर्षक: उपशीर्षक,
+                    },
+                }
+            )
+            return budget_expense_response
+    }
+}
+
+export const getBudgetExpenseService = ({
+    city,
+    months,
+    उपशीर्षक,
+}: {
+    city: string
+    months: string
+    उपशीर्षक: string
+}): Promise<AxiosResponse<BudgetExpenseProps[]>> => {
+    const budget_expense_response = axios.get<BudgetExpenseProps[]>(
+        BASE_URL + 'budget_expense',
+        {
+            params: {
+                cities: city,
+                months: months,
+                उपशीर्षक: उपशीर्षक,
+            },
+        }
+    )
+    return budget_expense_response
 }
