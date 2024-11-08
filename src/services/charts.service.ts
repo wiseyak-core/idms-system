@@ -1,5 +1,9 @@
 import { BASE_URL } from '@/constant'
-import { BudgetExpenseProps, QuadrimesterExpenseProps } from '@/model'
+import {
+    BudgetExpenseProps,
+    QuadrimesterExpenseProps,
+    QuadrimesterExpenseType,
+} from '@/model'
 import axios, { AxiosResponse } from 'axios'
 
 type GenericDataServiceProps = {
@@ -29,7 +33,7 @@ export const getGenericDataService = ({
     if (topics === 'quadrimester_expense') {
         const quadrimester_expense_response =
             axios.get<QuadrimesterExpenseProps>(
-                BASE_URL + 'quadrimester_expense',
+                BASE_URL + 'quadrimester_expense/qe',
                 {
                     params: {
                         city: cities,
@@ -62,21 +66,36 @@ export const getGenericDataService = ({
 }
 
 export const getQuadrimesterExpenseService = ({
-    city,
-    year,
+    cities,
+    years,
     quarter,
+    शीर्षक,
 }: {
-    city: string
-    year: string
-    quarter: string
-}): Promise<AxiosResponse<QuadrimesterExpenseProps>> => {
-    const quadrimester_expense_response = axios.get<QuadrimesterExpenseProps>(
-        BASE_URL + 'quadrimester_expense',
+    cities: string[]
+    years: string[]
+    quarter: string[]
+    शीर्षक: string[]
+}): Promise<AxiosResponse<QuadrimesterExpenseType[]>> => {
+    const quadrimester_expense_response = axios.get<QuadrimesterExpenseType[]>(
+        BASE_URL + 'quadrimester_expense/qe',
         {
             params: {
-                city: city,
-                year: year,
-                quarter: quarter,
+                cities,
+                years,
+                quarter,
+                शीर्षक,
+            },
+            paramsSerializer: (params) => {
+                return Object.keys(params)
+                    .map((key) => {
+                        const value = Array.isArray(params[key])
+                            ? params[key]
+                                  .map((v) => `${key}=${encodeURIComponent(v)}`)
+                                  .join('&')
+                            : `${key}=${encodeURIComponent(params[key])}`
+                        return value
+                    })
+                    .join('&')
             },
         }
     )
@@ -116,21 +135,33 @@ export const useGenericAPIQuery = (props: GenericDataServiceProps) => {
 }
 
 export const getBudgetExpenseService = ({
-    city,
+    cities,
     months,
     उपशीर्षक,
 }: {
-    city: string
-    months: string
-    उपशीर्षक: string
+    cities: string[]
+    months: string[]
+    उपशीर्षक: string[]
 }): Promise<AxiosResponse<BudgetExpenseProps[]>> => {
     const budget_expense_response = axios.get<BudgetExpenseProps[]>(
         BASE_URL + 'budget_expense',
         {
             params: {
-                cities: city,
-                months: months,
-                उपशीर्षक: उपशीर्षक,
+                cities,
+                months,
+                उपशीर्षक,
+            },
+            paramsSerializer: (params) => {
+                return Object.keys(params)
+                    .map((key) => {
+                        const value = Array.isArray(params[key])
+                            ? params[key]
+                                  .map((v) => `${key}=${encodeURIComponent(v)}`)
+                                  .join('&')
+                            : `${key}=${encodeURIComponent(params[key])}`
+                        return value
+                    })
+                    .join('&')
             },
         }
     )

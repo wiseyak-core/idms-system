@@ -2,9 +2,9 @@ import * as yup from 'yup'
 import { InferType } from 'yup'
 
 export const budgetExpenseFormSchema = yup.object({
-    city: yup.string().required(),
-    उपशीर्षक: yup.string().required(),
-    months: yup.string().optional(),
+    cities: yup.array().of(yup.string()).required(),
+    उपशीर्षक: yup.array().of(yup.string()).required(),
+    months: yup.array().of(yup.string()).optional(),
 })
 
 export type BudgetExpenseFormSchemaType = InferType<

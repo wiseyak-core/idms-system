@@ -3,13 +3,13 @@ import { SeriesOptionsType } from 'highcharts'
 
 export const quadrimesterExpenseBarChart = (
     data: QuadrimesterExpenseType[],
-    quarter: string | null
+    quarter: string[] | null
 ) => {
     const categories = data.map((item) => item['शीर्षक'])
 
     let series: SeriesOptionsType[] = []
 
-    switch (quarter) {
+    switch (quarter && quarter[0]) {
         case 'first':
             series = [
                 {
@@ -86,7 +86,6 @@ export const quadrimesterExpenseBarChart = (
                 minHeight: 2500,
                 scrollPositionY: 1,
             },
-            marginRight: 100,
             zooming: {
                 type: 'y',
                 mouseWheel: {

@@ -57,9 +57,12 @@ export const LocalActivitiesFilter = () => {
     }
 
     const handleFilter = (values: LocalActivitiesFilterFormSchemaType) => {
+        searchParams.delete('cities')
+        searchParams.delete('months')
+        searchParams.delete('उपशीर्षक')
         if (values.city && values.year && values.quarter) {
             setSearchParams({
-                city: values.city,
+                cities: values.city,
                 year: values.year,
                 quarter: values.quarter,
             })
