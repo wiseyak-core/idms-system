@@ -12,23 +12,31 @@ import {
 } from '@/schema/quadrimesterfilter.schema'
 import useTopicSelect from '@/hooks/useTopicSelect'
 import { useEffect } from 'react'
+import { QUADRIMESTER_TITLE } from '@/constant'
 
 export const QuadrimesterFilter = () => {
     const [searchParams, setSearchParams] = useSearchParams()
 
     const { setTopic, topic } = useTopicSelect()
 
-    const { handleSubmit, control, reset } =
-        useForm<QuadrimesterFilterFormSchemaType>({
-            resolver: yupResolver(quadrimesterFilterFormSchema),
-            defaultValues: {},
-        })
+    const {
+        handleSubmit,
+        control,
+        reset,
+        formState: { errors },
+    } = useForm<QuadrimesterFilterFormSchemaType>({
+        resolver: yupResolver(quadrimesterFilterFormSchema),
+        defaultValues: {},
+    })
+
+    console.log(errors)
 
     useEffect(() => {
         reset({
-            city: searchParams.get('city') ?? '',
-            year: searchParams.get('year') ?? '',
-            quarter: searchParams.get('quarter') ?? '',
+            cities: searchParams.getAll('cities') ?? '',
+            years: searchParams.getAll('years') ?? '',
+            quarter: searchParams.getAll('quarter') ?? '',
+            शीर्षक: searchParams.getAll('शीर्षक') ?? '',
         })
     }, [searchParams])
 
@@ -52,15 +60,46 @@ export const QuadrimesterFilter = () => {
         value: quarter,
     }))
 
+    const titleOptions = QUADRIMESTER_TITLE.map((item) => ({
+        label: item,
+        value: item,
+    }))
+
     const handleTopicChange = (value: string) => {
         setTopic(value)
     }
 
     const handleFilter = (values: QuadrimesterFilterFormSchemaType) => {
-        if (values.city && values.year && values.quarter) {
-            searchParams.set('city', values.city)
-            searchParams.set('year', values.year)
-            searchParams.set('quarter', values.quarter)
+        searchParams.delete('cities')
+        searchParams.delete('years')
+        searchParams.delete('quarter')
+        searchParams.delete('शीर्षक')
+        if (values.cities && values.years && values.quarter && values.शीर्षक) {
+            values.cities.forEach(
+                (city) =>
+                    city &&
+                    !searchParams.getAll('cities').includes(city) &&
+                    searchParams.append('cities', city)
+            )
+            values.years.forEach(
+                (year) =>
+                    year &&
+                    !searchParams.getAll('years').includes(year) &&
+                    searchParams.append('years', year)
+            )
+            values.quarter.forEach(
+                (quarter) =>
+                    quarter &&
+                    !searchParams.getAll('quarter').includes(quarter) &&
+                    searchParams.append('quarter', quarter)
+            )
+            values.शीर्षक.forEach(
+                (title) =>
+                    title &&
+                    !searchParams.getAll('शीर्षक').includes(title) &&
+                    searchParams.append('शीर्षक', title)
+            )
+
             setSearchParams(searchParams)
         }
     }
@@ -71,6 +110,7 @@ export const QuadrimesterFilter = () => {
             style={{
                 minWidth: '300px',
                 maxWidth: '300px',
+                flex: '1',
             }}
         >
             <form onSubmit={handleSubmit(handleFilter)}>
@@ -80,12 +120,13 @@ export const QuadrimesterFilter = () => {
                             <h3>Select District:</h3>
                             <Controller
                                 control={control}
-                                name="city"
+                                name="cities"
                                 render={({ field: { onChange, value } }) => (
                                     <Select
                                         onChange={(e) => {
                                             onChange(e)
                                         }}
+                                        mode="multiple"
                                         value={value}
                                         popupClassName="capitalizeWords"
                                         rootClassName="capitalizeWords"
@@ -126,13 +167,14 @@ export const QuadrimesterFilter = () => {
                         <Flex vertical>
                             <h3>Select Year:</h3>
                             <Controller
-                                name="year"
+                                name="years"
                                 control={control}
                                 render={({ field: { onChange, value } }) => (
                                     <Select
                                         onChange={(e) => {
                                             onChange(e)
                                         }}
+                                        mode="multiple"
                                         value={value}
                                         popupClassName="capitalizeWords"
                                         rootClassName="capitalizeWords"
@@ -149,46 +191,6 @@ export const QuadrimesterFilter = () => {
                                 )}
                             />
                         </Flex>
-                        {/* <Flex vertical>
-                      <h3>Select Chart Type:</h3>
-                      <Select
-                          value={selectedChartType}
-                          onChange={(value) => {
-                              setSelectedChartType(value)
-                          }}
-                          popupClassName="capitalizeWords"
-                          rootClassName="capitalizeWords"
-                          size="middle"
-                          showSearch
-                          placeholder="Select a chartType"
-                          filterOption={(input, option) =>
-                              (option?.label ?? '')
-                                  .toLowerCase()
-                                  .includes(input.toLowerCase())
-                          }
-                          options={chartTypeOptions}
-                      />
-                  </Flex> */}
-                        {/* <Flex vertical>
-                      <h3>Select Title:</h3>
-                      <Select
-                          value={selectedTitle}
-                          onChange={(value) => {
-                              setSelectedTitle(value)
-                          }}
-                          popupClassName="capitalizeWords"
-                          rootClassName="capitalizeWords"
-                          size="middle"
-                          showSearch
-                          placeholder="Select a title"
-                          filterOption={(input, option) =>
-                              (option?.label ?? '')
-                                  .toLowerCase()
-                                  .includes(input.toLowerCase())
-                          }
-                          options={titleOptions}
-                      />
-                  </Flex> */}
                         <Flex vertical>
                             <h3>Select Quarter:</h3>
                             <Controller
@@ -200,6 +202,7 @@ export const QuadrimesterFilter = () => {
                                         onChange={(e) => {
                                             onChange(e)
                                         }}
+                                        mode="multiple"
                                         popupClassName="capitalizeWords"
                                         rootClassName="capitalizeWords"
                                         size="middle"
@@ -211,6 +214,33 @@ export const QuadrimesterFilter = () => {
                                                 .includes(input.toLowerCase())
                                         }
                                         options={quarterOptions}
+                                    />
+                                )}
+                            />
+                        </Flex>
+                        <Flex vertical>
+                            <h3>Select शीर्षक:</h3>
+                            <Controller
+                                name="शीर्षक"
+                                control={control}
+                                render={({ field: { onChange, value } }) => (
+                                    <Select
+                                        value={value}
+                                        onChange={(e) => {
+                                            onChange(e)
+                                        }}
+                                        mode="multiple"
+                                        popupClassName="capitalizeWords"
+                                        rootClassName="capitalizeWords"
+                                        size="middle"
+                                        showSearch
+                                        placeholder="Select a शीर्षक"
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                        options={titleOptions}
                                     />
                                 )}
                             />

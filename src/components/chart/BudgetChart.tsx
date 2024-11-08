@@ -1,7 +1,10 @@
 import { BUDGET_SORT, BUDGET_STATE } from '@/constant'
 import { getBudgetExpenseService } from '@/services/charts.service'
-import { budgetExpenseBarChart } from '@/utils/budgetHighChartConverter'
-import { Card, Flex, Select } from 'antd'
+import {
+    budgetExpenseBarChart,
+    budgetExpensePieChart,
+} from '@/utils/budgetHighChartConverter'
+import { Card, Divider, Flex, Select } from 'antd'
 import { budgetSortData } from '@/utils/budgetSortData'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
@@ -14,16 +17,16 @@ const BudgetChart = () => {
 
     const [sort, setSort] = useState()
     const [state, setState] = useState()
-    const months = searchParams.get('months') || ''
-    const city = searchParams.get('city') || ''
+    const months = searchParams.getAll('months') || ''
+    const cities = searchParams.getAll('cities') || ''
     const topic = searchParams.get('topic') || ''
-    const उपशीर्षक = searchParams.get('उपशीर्षक') || ''
+    const उपशीर्षक = searchParams.getAll('उपशीर्षक') || ''
 
     const { data: chartData } = useQuery({
-        queryKey: [topic, city, months, उपशीर्षक],
+        queryKey: [topic, cities, months, उपशीर्षक],
         queryFn: () =>
             getBudgetExpenseService({
-                city,
+                cities,
                 months,
                 उपशीर्षक,
             }),
@@ -31,9 +34,10 @@ const BudgetChart = () => {
 
     const coreData = chartData && chartData.data
 
+    const barGraphData = coreData && budgetExpensePieChart(coreData)
+
     const filteredData =
-        coreData &&
-        coreData.filter((item: any) => item['बजेट उपशीर्षक नाम'] !== '')
+        coreData && coreData.filter((item) => item['बजेट उपशीर्षक नाम'] !== '')
 
     const sortedData = filteredData && budgetSortData(filteredData, sort, state)
 
@@ -50,26 +54,34 @@ const BudgetChart = () => {
         label: item,
     }))
 
-    console.log(chartData)
-
     return (
         <Card
             title="Charts"
             style={{
-                flexGrow: 1,
+                overflowY: 'auto',
                 width: '100%',
                 display: 'flex',
                 height: '100%',
                 flexDirection: 'column',
             }}
+            styles={{
+                body: {
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
+                    width: '100%',
+                    maxHeight: '100vh',
+                    overflowY: 'auto',
+                },
+                header: {
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    zIndex: '50',
+                },
+            }}
         >
-            <Flex
-                align="center"
-                justify="space-between"
-                style={{
-                    marginBottom: 20,
-                }}
-            >
+            <Flex align="center" justify="space-between">
                 <Flex vertical>
                     <h3>Select Sort:</h3>
                     <Select
@@ -113,12 +125,30 @@ const BudgetChart = () => {
                     />
                 </Flex>
             </Flex>
-            <HighchartsReact
-                id="chart"
-                highcharts={Highcharts}
-                options={structuredData || {}}
-                export
-            />
+            <Flex
+                vertical
+                gap={20}
+                style={{
+                    height: '100%',
+                    width: '100%',
+                    paddingBottom: 20,
+                }}
+            >
+                <HighchartsReact
+                    id="chart"
+                    highcharts={Highcharts}
+                    options={structuredData || {}}
+                    export
+                    style={{ zIndex: '-10 !important' }}
+                />
+                <Divider />
+                <HighchartsReact
+                    id="chart"
+                    highcharts={Highcharts}
+                    options={barGraphData || {}}
+                    export
+                />
+            </Flex>
         </Card>
     )
 }

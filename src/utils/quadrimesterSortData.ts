@@ -13,12 +13,12 @@ type QuadrimesterExpenseKeys =
 export const quadrimesterSortData = (
     data: QuadrimesterExpenseType[],
     sort: string | undefined,
-    quarter: string | null
+    quarter: string[] | null
 ) => {
     let budgetKey = '' as QuadrimesterExpenseKeys
     let expenseKey = '' as QuadrimesterExpenseKeys
 
-    switch (quarter) {
+    switch (quarter && quarter[0]) {
         case 'first':
             budgetKey = 'प्रथम चौमासिक बजेट'
             expenseKey = 'प्रथम चौमासिक खर्च'

@@ -13,22 +13,26 @@ const QuadrimesterChart = () => {
     const [searchParams] = useSearchParams()
 
     const [sort, setSort] = useState()
-    const quarter = searchParams.get('quarter') || ''
-    const year = searchParams.get('year') || ''
-    const city = searchParams.get('city') || ''
-    const topic = searchParams.get('topic') || ''
+    const quarter = searchParams.getAll('quarter') || ''
+    const years = searchParams.getAll('years') || ''
+    const cities = searchParams.getAll('cities') || ''
+    const topic = searchParams.getAll('topic') || ''
+    const शीर्षक = searchParams.getAll('शीर्षक') || ''
 
     const { data: chartData } = useQuery({
-        queryKey: [topic, city, year, quarter],
+        queryKey: [topic, cities, years, quarter, शीर्षक],
         queryFn: () =>
             getQuadrimesterExpenseService({
-                city,
-                year,
+                cities,
+                years,
+                शीर्षक,
                 quarter,
             }),
     })
 
-    const coreData = chartData && chartData.data.data
+    const coreData = chartData && chartData.data
+
+    console.log(coreData)
     const filteredData =
         coreData && coreData.filter((item: any) => item['शीर्षक'] !== '')
 

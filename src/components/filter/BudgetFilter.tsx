@@ -48,17 +48,35 @@ export const BudgetFilter = () => {
     }
 
     const handleFilter = (values: BudgetExpenseFormSchemaType) => {
-        if (values.city && values.months && values.उपशीर्षक) {
-            searchParams.set('city', values.city)
-            searchParams.set('months', values.months)
-            searchParams.set('उपशीर्षक', values.उपशीर्षक)
+        searchParams.delete('cities')
+        searchParams.delete('months')
+        searchParams.delete('उपशीर्षक')
+        if (values.cities && values.months && values.उपशीर्षक) {
+            values.cities.forEach(
+                (city) =>
+                    city &&
+                    !searchParams.getAll('cities').includes(city) &&
+                    searchParams.append('cities', city)
+            )
+            values.months.forEach(
+                (month) =>
+                    month &&
+                    !searchParams.getAll('months').includes(month) &&
+                    searchParams.append('months', month)
+            )
+            values.उपशीर्षक.forEach(
+                (subTitle) =>
+                    subTitle &&
+                    !searchParams.getAll('उपशीर्षक').includes(subTitle) &&
+                    searchParams.append('उपशीर्षक', subTitle)
+            )
             setSearchParams(searchParams)
         }
     }
 
     useEffect(() => {
-        const months = searchParams.get('months')
-        const उपशीर्षक = searchParams.get('उपशीर्षक')
+        const months = searchParams.getAll('months')
+        const उपशीर्षक = searchParams.getAll('उपशीर्षक')
 
         if (!months) {
             searchParams.set('months', MONTHS[0])
@@ -71,9 +89,9 @@ export const BudgetFilter = () => {
         setSearchParams(searchParams)
 
         reset({
-            city: searchParams.get('city') ?? '',
-            months: searchParams.get('months') ?? '',
-            उपशीर्षक: searchParams.get('उपशीर्षक') ?? '',
+            cities: searchParams.getAll('cities') ?? '',
+            months: searchParams.getAll('months') ?? '',
+            उपशीर्षक: searchParams.getAll('उपशीर्षक') ?? '',
         })
     }, [searchParams])
 
@@ -83,6 +101,9 @@ export const BudgetFilter = () => {
             style={{
                 minWidth: '300px',
                 maxWidth: '300px',
+                height: '100%',
+                width: '100%',
+                flex: 1,
             }}
         >
             <form onSubmit={handleSubmit(handleFilter)}>
@@ -91,7 +112,7 @@ export const BudgetFilter = () => {
                         <Flex vertical>
                             <h3>Select District:</h3>
                             <Controller
-                                name="city"
+                                name="cities"
                                 control={control}
                                 render={({ field: { value, onChange } }) => (
                                     <Select
@@ -100,6 +121,7 @@ export const BudgetFilter = () => {
                                         popupClassName="capitalizeWords"
                                         rootClassName="capitalizeWords"
                                         size="middle"
+                                        mode="multiple"
                                         showSearch
                                         placeholder="Select a district"
                                         filterOption={(input, option) =>
@@ -139,6 +161,7 @@ export const BudgetFilter = () => {
                                 control={control}
                                 render={({ field: { value, onChange } }) => (
                                     <Select
+                                        mode="multiple"
                                         value={value}
                                         onChange={onChange}
                                         popupClassName="capitalizeWords"
@@ -165,6 +188,7 @@ export const BudgetFilter = () => {
                                     <Select
                                         value={value}
                                         onChange={onChange}
+                                        mode="multiple"
                                         popupClassName="capitalizeWords"
                                         rootClassName="capitalizeWords"
                                         size="middle"

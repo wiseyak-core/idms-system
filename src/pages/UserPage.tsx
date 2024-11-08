@@ -8,6 +8,7 @@ import { YEAR } from '@/constant/year'
 import { QUARTER } from '@/constant/quarter'
 import FilterSection from '@/components/filter/FilterSection'
 import { TopicProvider } from '@/hooks/useTopicSelect'
+import { QUADRIMESTER_TITLE } from '@/constant'
 
 export const UserPage = () => {
     const [searchParams, setSearchParams] = useSearchParams()
@@ -19,20 +20,28 @@ export const UserPage = () => {
             setSearchParams({
                 ...searchParams,
                 topic: TOPICS[0],
-                city: CITIES[0],
-                year: YEAR[0],
+                cities: CITIES[0],
+                years: YEAR[0],
                 quarter: QUARTER[0],
+                शीर्षक: QUADRIMESTER_TITLE[0],
             })
         }
     }, [])
 
     return (
         <TopicProvider>
-            <Flex vertical>
-                <Flex gap={8}>
-                    <FilterSection />
-                    <ChartSection />
-                </Flex>
+            <Flex
+                gap={8}
+                style={{
+                    width: '100%',
+                    padding: '1rem',
+                    maxHeight: '100vh',
+                    alignItems: 'start',
+                    overflow: 'hidden',
+                }}
+            >
+                <FilterSection />
+                <ChartSection />
             </Flex>
         </TopicProvider>
     )
