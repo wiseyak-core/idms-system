@@ -2,7 +2,9 @@ import { BUDGET_SORT, BUDGET_STATE } from '@/constant'
 import { getBudgetExpenseService } from '@/services/charts.service'
 import {
     budgetExpenseBarChart,
+    budgetExpenseLineChart,
     budgetExpensePieChart,
+    budgetExpenseStackedChart,
 } from '@/utils/budgetHighChartConverter'
 import { Card, Divider, Flex, Select } from 'antd'
 import { budgetSortData } from '@/utils/budgetSortData'
@@ -34,6 +36,11 @@ const BudgetChart = () => {
 
     const coreData = chartData && chartData.data
 
+    const stackedGraphData =
+        coreData && budgetExpenseStackedChart(coreData, months)
+
+    const lineGraphData = coreData && budgetExpenseLineChart(coreData, months)
+
     const barGraphData = coreData && budgetExpensePieChart(coreData)
 
     const filteredData =
@@ -53,6 +60,39 @@ const BudgetChart = () => {
         value: item,
         label: item,
     }))
+
+    const multipleGraphRender = (months: string[], cities: string[]) => {
+        if (months.length > 1) {
+            return (
+                <HighchartsReact
+                    id="chart"
+                    highcharts={Highcharts}
+                    options={lineGraphData || {}}
+                    export
+                    style={{ zIndex: '-10 !important' }}
+                />
+            )
+        } else if (cities.length > 1) {
+            return (
+                <HighchartsReact
+                    id="chart"
+                    highcharts={Highcharts}
+                    options={stackedGraphData || {}}
+                    export
+                    style={{ zIndex: '-10 !important' }}
+                />
+            )
+        }
+        return (
+            <HighchartsReact
+                id="chart"
+                highcharts={Highcharts}
+                options={structuredData || {}}
+                export
+                style={{ zIndex: '-10 !important' }}
+            />
+        )
+    }
 
     return (
         <Card
@@ -104,7 +144,7 @@ const BudgetChart = () => {
                     />
                 </Flex>
                 <Flex vertical>
-                    <h3>Select जम्मा/चालु: </h3>
+                    <h3>Select चालु/पूंजीगत/जम्मा: </h3>
                     <Select
                         value={state}
                         onChange={(value) => {
@@ -115,7 +155,7 @@ const BudgetChart = () => {
                         size="middle"
                         showSearch
                         style={{ width: 200 }}
-                        placeholder="Select जम्मा/चालु"
+                        placeholder="Select चालु/पूंजीगत/जम्मा"
                         filterOption={(input, option) =>
                             (option?.label ?? '')
                                 .toLowerCase()
@@ -134,13 +174,8 @@ const BudgetChart = () => {
                     paddingBottom: 20,
                 }}
             >
-                <HighchartsReact
-                    id="chart"
-                    highcharts={Highcharts}
-                    options={structuredData || {}}
-                    export
-                    style={{ zIndex: '-10 !important' }}
-                />
+                {multipleGraphRender(months, cities)}
+
                 <Divider />
                 <HighchartsReact
                     id="chart"

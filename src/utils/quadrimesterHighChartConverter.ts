@@ -5,6 +5,8 @@ export const quadrimesterExpenseBarChart = (
     data: QuadrimesterExpenseType[],
     quarter: string[] | null
 ) => {
+    const isSmallChart = data.length < 5
+
     const categories = data.map((item) => item['शीर्षक'])
 
     let series: SeriesOptionsType[] = []
@@ -83,7 +85,7 @@ export const quadrimesterExpenseBarChart = (
         chart: {
             type: 'bar',
             scrollablePlotArea: {
-                minHeight: 2500,
+                minHeight: isSmallChart ? 100 : 1500,
                 scrollPositionY: 1,
             },
             zooming: {

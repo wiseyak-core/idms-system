@@ -14,7 +14,7 @@ export const BUDGET_SORT = [
     'BUDGET(L TO H)',
 ]
 
-export const BUDGET_STATE = ['चालु', 'जम्मा']
+export const BUDGET_STATE = ['चालु', 'पूंजीगत', 'जम्मा']
 
 export const MONTHS = ['shrawan', 'bhadra', 'asoj']
 

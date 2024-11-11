@@ -1,5 +1,6 @@
 import { BudgetExpenseProps } from '@/model'
 import { SeriesOptionsType } from 'highcharts'
+import convertToNepaliCurrency from './currencyConverter'
 
 export const budgetExpenseBarChart = (
     data: BudgetExpenseProps[],
@@ -58,7 +59,7 @@ export const budgetExpenseBarChart = (
         chart: {
             type: 'bar',
             scrollablePlotArea: {
-                minHeight: isSmallChart ? 100 : 1500,
+                minHeight: isSmallChart ? 100 : 2500,
                 scrollPositionY: 1,
             },
             marginRight: 100,
@@ -92,9 +93,22 @@ export const budgetExpenseBarChart = (
 }
 
 export const budgetExpensePieChart = (data: BudgetExpenseProps[]) => {
-    const totalData =
-        data.filter((item) => item['क्र.सं.'] === 'जम्मा')[0] || data[0]
-    console.log('totalData', totalData)
+    const remainingData = data.filter((item) => item['क्र.सं.'] !== 'जम्मा')
+
+    const totalData = remainingData.reduce(
+        (acc, item) => {
+            acc['बजेट जम्मा'] += item['बजेट जम्मा']
+            acc['बजेट चालु'] += item['बजेट चालु']
+            acc['बजेट पूंजीगत'] += item['बजेट पूंजीगत']
+
+            return acc
+        },
+        {
+            'बजेट जम्मा': 0,
+            'बजेट चालु': 0,
+            'बजेट पूंजीगत': 0,
+        }
+    )
 
     const highChartOptions: Highcharts.Options = {
         chart: {
@@ -146,6 +160,105 @@ export const budgetExpensePieChart = (data: BudgetExpenseProps[]) => {
                         y: totalData['बजेट पूंजीगत'],
                     },
                 ],
+            },
+        ],
+    }
+    return highChartOptions
+}
+
+export const budgetExpenseStackedChart = (
+    data: BudgetExpenseProps[],
+    cities?: string[]
+) => {
+    const highChartOptions: Highcharts.Options = {
+        chart: {
+            type: 'column',
+            height: 500,
+        },
+        title: {
+            text: 'बजेट / खर्च',
+        },
+        xAxis: {
+            categories: cities || [],
+        },
+
+        yAxis: {
+            title: {
+                text: 'रुपैयाँ',
+            },
+        },
+
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+            },
+        },
+
+        series: [
+            {
+                name: 'बजेट चालु',
+                data: data.map((item) => item['बजेट चालु']),
+                type: 'column',
+            },
+            {
+                name: 'खर्च चालु',
+                data: data.map((item) => item['खर्च चालु']),
+                type: 'column',
+            },
+            {
+                name: 'बजेट जम्मा',
+                data: data.map((item) => item['बजेट जम्मा']),
+                type: 'column',
+            },
+            {
+                name: 'खर्च जम्मा',
+                data: data.map((item) => item['खर्च जम्मा']),
+                type: 'column',
+            },
+        ],
+    }
+    return highChartOptions
+}
+
+export const budgetExpenseLineChart = (
+    data: BudgetExpenseProps[],
+    months: string[]
+) => {
+    console.log(months)
+    const highChartOptions: Highcharts.Options = {
+        chart: {
+            type: 'area',
+        },
+        xAxis: {
+            categories: months,
+        },
+        yAxis: {
+            labels: {
+                formatter: function () {
+                    return 'Rs ' + convertToNepaliCurrency(this.value as number)
+                },
+            },
+        },
+        series: [
+            {
+                name: 'बजेट चालु',
+                data: data.map((item) => item['बजेट चालु']),
+                type: 'area',
+            },
+            {
+                name: 'खर्च चालु',
+                data: data.map((item) => item['खर्च चालु']),
+                type: 'area',
+            },
+            {
+                name: 'बजेट जम्मा',
+                data: data.map((item) => item['बजेट जम्मा']),
+                type: 'area',
+            },
+            {
+                name: 'खर्च जम्मा',
+                data: data.map((item) => item['खर्च जम्मा']),
+                type: 'area',
             },
         ],
     }

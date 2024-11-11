@@ -17,11 +17,24 @@ export const BudgetFilter = () => {
 
     const { setTopic, topic } = useTopicSelect()
 
-    const { handleSubmit, control, reset } =
+    const { handleSubmit, control, reset, watch } =
         useForm<BudgetExpenseFormSchemaType>({
             resolver: yupResolver(budgetExpenseFormSchema),
             defaultValues: {},
         })
+
+    const cities = watch('cities')
+    const months = watch('months')
+    const उपशीर्षक = watch('उपशीर्षक')
+
+    const isSingleCity =
+        (months && months?.length > 1) || (उपशीर्षक && उपशीर्षक?.length > 1)
+
+    const isSingleMonth =
+        (cities && cities?.length > 1) || (उपशीर्षक && उपशीर्षक?.length > 1)
+
+    const isSingleSubTitle =
+        (cities && cities?.length > 1) || (months && months?.length > 1)
 
     const topicsOptions = TOPICS.map((topic) => ({
         label: topic.replace('_', ' '),
@@ -122,6 +135,11 @@ export const BudgetFilter = () => {
                                         rootClassName="capitalizeWords"
                                         size="middle"
                                         mode="multiple"
+                                        maxCount={
+                                            isSingleCity
+                                                ? 1
+                                                : citiesOptions.length
+                                        }
                                         showSearch
                                         placeholder="Select a district"
                                         filterOption={(input, option) =>
@@ -164,6 +182,11 @@ export const BudgetFilter = () => {
                                         mode="multiple"
                                         value={value}
                                         onChange={onChange}
+                                        maxCount={
+                                            isSingleMonth
+                                                ? 1
+                                                : citiesOptions.length
+                                        }
                                         popupClassName="capitalizeWords"
                                         rootClassName="capitalizeWords"
                                         size="middle"
@@ -187,8 +210,15 @@ export const BudgetFilter = () => {
                                 render={({ field: { value, onChange } }) => (
                                     <Select
                                         value={value}
-                                        onChange={onChange}
+                                        onChange={(e) => {
+                                            onChange(e)
+                                        }}
                                         mode="multiple"
+                                        maxCount={
+                                            isSingleSubTitle
+                                                ? 1
+                                                : subTitleOptions.length
+                                        }
                                         popupClassName="capitalizeWords"
                                         rootClassName="capitalizeWords"
                                         size="middle"
