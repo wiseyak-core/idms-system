@@ -5,6 +5,8 @@ export type DatasetTableProps = {
     uploadedAt: string
 }
 
+export type BudgetExpensekeys = 'बजेट' | 'खर्च'
+
 export type ApiResponse = IDMSArray[]
 
 export interface IDMSArray {

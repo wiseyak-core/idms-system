@@ -214,11 +214,7 @@ export const BudgetFilter = () => {
                                             onChange(e)
                                         }}
                                         mode="multiple"
-                                        maxCount={
-                                            isSingleSubTitle
-                                                ? 1
-                                                : subTitleOptions.length
-                                        }
+                                        maxCount={isSingleSubTitle ? 1 : 5}
                                         popupClassName="capitalizeWords"
                                         rootClassName="capitalizeWords"
                                         size="middle"

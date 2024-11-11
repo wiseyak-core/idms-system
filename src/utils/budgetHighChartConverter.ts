@@ -1,65 +1,50 @@
-import { BudgetExpenseProps } from '@/model'
+import { BudgetExpensekeys, BudgetExpenseProps } from '@/model'
 import { SeriesOptionsType } from 'highcharts'
 import convertToNepaliCurrency from './currencyConverter'
 
-export const budgetExpenseBarChart = (
-    data: BudgetExpenseProps[],
-    state: string | undefined
-) => {
-    const isSmallChart = data.length < 5
+// Bar Chart
+export const budgetExpenseBarChart = (data: BudgetExpenseProps[]) => {
+    const isSmallChart = data.length <= 5
     const categories = data.map((item) => item['बजेट उपशीर्षक नाम'])
 
-    let series: SeriesOptionsType[] = []
-    switch (state) {
-        case 'चालु':
-            series = [
-                {
-                    name: 'खर्च चालु',
-                    type: 'column',
-                    data: data.map((item) => item['खर्च चालु']),
-                },
-                {
-                    name: 'बजेट चालु',
-                    type: 'column',
-                    data: data.map((item) => item['बजेट चालु']),
-                },
-            ]
-            break
-        case 'जम्मा':
-            series = [
-                {
-                    name: 'खर्च जम्मा',
-                    type: 'column',
-                    data: data.map((item) => item['खर्च जम्मा']),
-                },
-                {
-                    name: 'बजेट जम्मा',
-                    type: 'column',
-                    data: data.map((item) => item['बजेट जम्मा']),
-                },
-            ]
-            break
-
-        default:
-            series = [
-                {
-                    name: 'खर्च चालु',
-                    type: 'column',
-                    data: data.map((item) => item['खर्च चालु']),
-                },
-                {
-                    name: 'बजेट चालु',
-                    type: 'column',
-                    data: data.map((item) => item['बजेट चालु']),
-                },
-            ]
-    }
+    const series: SeriesOptionsType[] = [
+        {
+            name: 'खर्च चालु',
+            type: 'column',
+            data: data.map((item) => item['खर्च चालु']),
+        },
+        {
+            name: 'बजेट चालु',
+            type: 'column',
+            data: data.map((item) => item['बजेट चालु']),
+        },
+        {
+            name: 'खर्च जम्मा',
+            type: 'column',
+            data: data.map((item) => item['खर्च जम्मा']),
+        },
+        {
+            name: 'बजेट जम्मा',
+            type: 'column',
+            data: data.map((item) => item['बजेट जम्मा']),
+        },
+        {
+            name: 'खर्च चालु',
+            type: 'column',
+            data: data.map((item) => item['खर्च चालु']),
+        },
+        {
+            name: 'बजेट चालु',
+            type: 'column',
+            data: data.map((item) => item['बजेट चालु']),
+        },
+    ]
 
     const highChartOptions: Highcharts.Options = {
         chart: {
             type: 'bar',
             scrollablePlotArea: {
-                minHeight: isSmallChart ? 100 : 2500,
+                minHeight: isSmallChart ? 500 : 3000,
                 scrollPositionY: 1,
             },
             marginRight: 100,
@@ -92,21 +77,27 @@ export const budgetExpenseBarChart = (
     return highChartOptions
 }
 
-export const budgetExpensePieChart = (data: BudgetExpenseProps[]) => {
-    const remainingData = data.filter((item) => item['क्र.सं.'] !== 'जम्मा')
+// Pie Chart
 
+export const budgetExpensePieChart = (
+    data: BudgetExpenseProps[],
+    pieState: BudgetExpensekeys | undefined
+) => {
+    const selectedKey = pieState as BudgetExpensekeys
+    const remainingData = data.filter((item) => item['क्र.सं.'] !== 'जम्मा')
     const totalData = remainingData.reduce(
         (acc, item) => {
-            acc['बजेट जम्मा'] += item['बजेट जम्मा']
             acc['बजेट चालु'] += item['बजेट चालु']
             acc['बजेट पूंजीगत'] += item['बजेट पूंजीगत']
-
+            acc['खर्च चालु'] += item['खर्च चालु']
+            acc['खर्च पूंजीगत'] += item['खर्च पूंजीगत']
             return acc
         },
         {
-            'बजेट जम्मा': 0,
             'बजेट चालु': 0,
             'बजेट पूंजीगत': 0,
+            'खर्च चालु': 0,
+            'खर्च पूंजीगत': 0,
         }
     )
 
@@ -148,16 +139,22 @@ export const budgetExpensePieChart = (data: BudgetExpenseProps[]) => {
                 name: 'बजेट / खर्च',
                 data: [
                     {
-                        name: 'बजेट जम्मा',
-                        y: totalData['बजेट जम्मा'],
+                        name:
+                            selectedKey === 'खर्च' ? 'खर्च चालु' : 'बजेट चालु',
+                        y:
+                            selectedKey === 'खर्च'
+                                ? totalData['खर्च चालु']
+                                : totalData['बजेट चालु'],
                     },
                     {
-                        name: 'बजेट चालु',
-                        y: totalData['बजेट चालु'],
-                    },
-                    {
-                        name: 'बजेट पूंजीगत',
-                        y: totalData['बजेट पूंजीगत'],
+                        name:
+                            selectedKey === 'खर्च'
+                                ? 'खर्च पूंजीगत'
+                                : 'बजेट पूंजीगत',
+                        y:
+                            selectedKey === 'खर्च'
+                                ? totalData['खर्च पूंजीगत']
+                                : totalData['बजेट पूंजीगत'],
                     },
                 ],
             },
@@ -165,6 +162,8 @@ export const budgetExpensePieChart = (data: BudgetExpenseProps[]) => {
     }
     return highChartOptions
 }
+
+// Stacked Chart
 
 export const budgetExpenseStackedChart = (
     data: BudgetExpenseProps[],
@@ -206,6 +205,16 @@ export const budgetExpenseStackedChart = (
                 type: 'column',
             },
             {
+                name: 'बजेट पूंजीगत',
+                data: data.map((item) => item['बजेट पूंजीगत']),
+                type: 'column',
+            },
+            {
+                name: 'खर्च पूंजीगत',
+                data: data.map((item) => item['खर्च पूंजीगत']),
+                type: 'column',
+            },
+            {
                 name: 'बजेट जम्मा',
                 data: data.map((item) => item['बजेट जम्मा']),
                 type: 'column',
@@ -220,11 +229,10 @@ export const budgetExpenseStackedChart = (
     return highChartOptions
 }
 
-export const budgetExpenseLineChart = (
+export const budgetExpenseAreaChart = (
     data: BudgetExpenseProps[],
     months: string[]
 ) => {
-    console.log(months)
     const highChartOptions: Highcharts.Options = {
         chart: {
             type: 'area',
@@ -251,6 +259,16 @@ export const budgetExpenseLineChart = (
                 type: 'area',
             },
             {
+                name: 'बजेट पूंजीगत',
+                data: data.map((item) => item['बजेट पूंजीगत']),
+                type: 'area',
+            },
+            {
+                name: 'खर्च पूंजीगत',
+                data: data.map((item) => item['खर्च पूंजीगत']),
+                type: 'area',
+            },
+            {
                 name: 'बजेट जम्मा',
                 data: data.map((item) => item['बजेट जम्मा']),
                 type: 'area',
@@ -259,6 +277,58 @@ export const budgetExpenseLineChart = (
                 name: 'खर्च जम्मा',
                 data: data.map((item) => item['खर्च जम्मा']),
                 type: 'area',
+            },
+        ],
+    }
+    return highChartOptions
+}
+
+export const budgetExpenseLineChart = (
+    data: BudgetExpenseProps[],
+    months: string[]
+) => {
+    console.log('Kinna chalana yo hehe')
+    const highChartOptions: Highcharts.Options = {
+        xAxis: {
+            categories: months,
+        },
+        yAxis: {
+            labels: {
+                formatter: function () {
+                    return 'Rs ' + convertToNepaliCurrency(this.value as number)
+                },
+            },
+        },
+        series: [
+            {
+                name: 'बजेट चालु',
+                data: data.map((item) => item['बजेट चालु']),
+                type: 'line',
+            },
+            {
+                name: 'खर्च चालु',
+                data: data.map((item) => item['खर्च चालु']),
+                type: 'line',
+            },
+            {
+                name: 'बजेट पूंजीगत',
+                data: data.map((item) => item['बजेट पूंजीगत']),
+                type: 'line',
+            },
+            {
+                name: 'खर्च पूंजीगत',
+                data: data.map((item) => item['खर्च पूंजीगत']),
+                type: 'line',
+            },
+            {
+                name: 'बजेट जम्मा',
+                data: data.map((item) => item['बजेट जम्मा']),
+                type: 'line',
+            },
+            {
+                name: 'खर्च जम्मा',
+                data: data.map((item) => item['खर्च जम्मा']),
+                type: 'line',
             },
         ],
     }
