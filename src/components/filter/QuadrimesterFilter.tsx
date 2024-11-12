@@ -19,17 +19,11 @@ export const QuadrimesterFilter = () => {
 
     const { setTopic, topic } = useTopicSelect()
 
-    const {
-        handleSubmit,
-        control,
-        reset,
-        formState: { errors },
-    } = useForm<QuadrimesterFilterFormSchemaType>({
-        resolver: yupResolver(quadrimesterFilterFormSchema),
-        defaultValues: {},
-    })
-
-    console.log(errors)
+    const { handleSubmit, control, reset } =
+        useForm<QuadrimesterFilterFormSchemaType>({
+            resolver: yupResolver(quadrimesterFilterFormSchema),
+            defaultValues: {},
+        })
 
     useEffect(() => {
         reset({

@@ -32,7 +32,6 @@ const QuadrimesterChart = () => {
 
     const coreData = chartData && chartData.data
 
-    console.log(coreData)
     const filteredData =
         coreData && coreData.filter((item: any) => item['शीर्षक'] !== '')
 

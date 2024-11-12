@@ -1,6 +1,6 @@
 import { CITIES } from '@/constant/cities'
 import { TOPICS } from '@/constant/topics'
-import { Card, Flex, Select, Button } from 'antd'
+import { Card, Flex, Select, Button, Checkbox } from 'antd'
 import { Controller, useForm } from 'react-hook-form'
 import { useSearchParams } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -17,11 +17,26 @@ export const BudgetFilter = () => {
 
     const { setTopic, topic } = useTopicSelect()
 
-    const { handleSubmit, control, reset } =
+    const { handleSubmit, control, reset, watch } =
         useForm<BudgetExpenseFormSchemaType>({
             resolver: yupResolver(budgetExpenseFormSchema),
             defaultValues: {},
         })
+
+    const cities = watch('cities')
+    const months = watch('months')
+    const उपशीर्षक = watch('उपशीर्षक')
+
+    const isSingleCity =
+        (months && months?.length > 1) || (उपशीर्षक && उपशीर्षक?.length > 1)
+
+    const isSingleMonth =
+        (cities && cities?.length > 1) || (उपशीर्षक && उपशीर्षक?.length > 1)
+
+    const isSingleSubTitle =
+        (cities && cities?.length > 1) || (months && months?.length > 1)
+
+    console.log(isSingleCity, isSingleMonth)
 
     const topicsOptions = TOPICS.map((topic) => ({
         label: topic.replace('_', ' '),
@@ -122,6 +137,12 @@ export const BudgetFilter = () => {
                                         rootClassName="capitalizeWords"
                                         size="middle"
                                         mode="multiple"
+                                        maxCount={
+                                            उपशीर्षक?.includes('all') ||
+                                            isSingleCity
+                                                ? 1
+                                                : citiesOptions.length
+                                        }
                                         showSearch
                                         placeholder="Select a district"
                                         filterOption={(input, option) =>
@@ -164,6 +185,12 @@ export const BudgetFilter = () => {
                                         mode="multiple"
                                         value={value}
                                         onChange={onChange}
+                                        maxCount={
+                                            isSingleMonth ||
+                                            उपशीर्षक?.includes('all')
+                                                ? 1
+                                                : citiesOptions.length
+                                        }
                                         popupClassName="capitalizeWords"
                                         rootClassName="capitalizeWords"
                                         size="middle"
@@ -185,22 +212,68 @@ export const BudgetFilter = () => {
                                 name={'उपशीर्षक'}
                                 control={control}
                                 render={({ field: { value, onChange } }) => (
-                                    <Select
-                                        value={value}
-                                        onChange={onChange}
-                                        mode="multiple"
-                                        popupClassName="capitalizeWords"
-                                        rootClassName="capitalizeWords"
-                                        size="middle"
-                                        showSearch
-                                        placeholder="Select a उपशीर्षक"
-                                        filterOption={(input, option) =>
-                                            (option?.label ?? '')
-                                                .toLowerCase()
-                                                .includes(input.toLowerCase())
-                                        }
-                                        options={subTitleOptions}
-                                    />
+                                    <Flex
+                                        justify="space-between"
+                                        align="start"
+                                        gap={10}
+                                        vertical
+                                    >
+                                        <Select
+                                            value={
+                                                value?.includes('all')
+                                                    ? []
+                                                    : value
+                                            }
+                                            onChange={(e) => {
+                                                onChange(e)
+                                            }}
+                                            style={{
+                                                width: '100%',
+                                            }}
+                                            mode="multiple"
+                                            maxCount={isSingleSubTitle ? 1 : 5}
+                                            popupClassName="capitalizeWords"
+                                            rootClassName="capitalizeWords"
+                                            size="middle"
+                                            showSearch
+                                            placeholder="Select a उपशीर्षक"
+                                        >
+                                            {subTitleOptions.map((option) => (
+                                                <Select.Option
+                                                    key={option.value}
+                                                    value={option.value}
+                                                    disabled={
+                                                        option.value ===
+                                                            'all' &&
+                                                        (isSingleCity ||
+                                                            isSingleMonth)
+                                                    }
+                                                >
+                                                    {option.label}
+                                                </Select.Option>
+                                            ))}
+                                        </Select>
+                                        <Checkbox
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                            }}
+                                            checked={value?.includes('all')}
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    onChange(['all'])
+                                                } else {
+                                                    onChange([])
+                                                }
+                                            }}
+                                            disabled={
+                                                isSingleCity || isSingleMonth
+                                            }
+                                        >
+                                            All
+                                        </Checkbox>
+                                    </Flex>
                                 )}
                             />
                         </Flex>

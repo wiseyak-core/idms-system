@@ -1,5 +1,1 @@
-export const TOPICS = [
-    'quadrimester_expense',
-    'budget_expense',
-    'local_activities',
-]
+export const TOPICS = ['budget_expense', 'quadrimester_expense']
