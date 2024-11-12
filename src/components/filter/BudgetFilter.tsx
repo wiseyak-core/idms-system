@@ -28,10 +28,14 @@ export const BudgetFilter = () => {
     const उपशीर्षक = watch('उपशीर्षक')
 
     const isSingleCity =
-        (months && months?.length > 1) || (उपशीर्षक && उपशीर्षक?.length > 1)
+        (months && months?.length > 1) ||
+        (उपशीर्षक && उपशीर्षक?.length > 1) ||
+        (उपशीर्षक && उपशीर्षक.includes('all'))
 
     const isSingleMonth =
-        (cities && cities?.length > 1) || (उपशीर्षक && उपशीर्षक?.length > 1)
+        (cities && cities?.length > 1) ||
+        (उपशीर्षक && उपशीर्षक?.length > 1) ||
+        (उपशीर्षक && उपशीर्षक.includes('all'))
 
     const isSingleSubTitle =
         (cities && cities?.length > 1) || (months && months?.length > 1)
@@ -220,13 +224,21 @@ export const BudgetFilter = () => {
                                         size="middle"
                                         showSearch
                                         placeholder="Select a उपशीर्षक"
-                                        filterOption={(input, option) =>
-                                            (option?.label ?? '')
-                                                .toLowerCase()
-                                                .includes(input.toLowerCase())
-                                        }
-                                        options={subTitleOptions}
-                                    />
+                                    >
+                                        {subTitleOptions.map((option) => (
+                                            <Select.Option
+                                                key={option.value}
+                                                value={option.value}
+                                                disabled={
+                                                    (!isSingleCity ||
+                                                        !isSingleMonth) &&
+                                                    option.value === 'all'
+                                                }
+                                            >
+                                                {option.label}
+                                            </Select.Option>
+                                        ))}
+                                    </Select>
                                 )}
                             />
                         </Flex>
