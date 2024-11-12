@@ -28,17 +28,15 @@ export const BudgetFilter = () => {
     const उपशीर्षक = watch('उपशीर्षक')
 
     const isSingleCity =
-        (months && months?.length > 1) ||
-        (उपशीर्षक && उपशीर्षक?.length > 1) ||
-        (उपशीर्षक && उपशीर्षक.includes('all'))
+        (months && months?.length > 1) || (उपशीर्षक && उपशीर्षक?.length > 1)
 
     const isSingleMonth =
-        (cities && cities?.length > 1) ||
-        (उपशीर्षक && उपशीर्षक?.length > 1) ||
-        (उपशीर्षक && उपशीर्षक.includes('all'))
+        (cities && cities?.length > 1) || (उपशीर्षक && उपशीर्षक?.length > 1)
 
     const isSingleSubTitle =
         (cities && cities?.length > 1) || (months && months?.length > 1)
+
+    console.log(isSingleCity, isSingleMonth)
 
     const topicsOptions = TOPICS.map((topic) => ({
         label: topic.replace('_', ' '),
@@ -140,6 +138,7 @@ export const BudgetFilter = () => {
                                         size="middle"
                                         mode="multiple"
                                         maxCount={
+                                            उपशीर्षक?.includes('all') ||
                                             isSingleCity
                                                 ? 1
                                                 : citiesOptions.length
@@ -187,7 +186,8 @@ export const BudgetFilter = () => {
                                         value={value}
                                         onChange={onChange}
                                         maxCount={
-                                            isSingleMonth
+                                            isSingleMonth ||
+                                            उपशीर्षक?.includes('all')
                                                 ? 1
                                                 : citiesOptions.length
                                         }
@@ -230,9 +230,9 @@ export const BudgetFilter = () => {
                                                 key={option.value}
                                                 value={option.value}
                                                 disabled={
-                                                    (!isSingleCity ||
-                                                        !isSingleMonth) &&
-                                                    option.value === 'all'
+                                                    option.value === 'all' &&
+                                                    (isSingleCity ||
+                                                        isSingleMonth)
                                                 }
                                             >
                                                 {option.label}

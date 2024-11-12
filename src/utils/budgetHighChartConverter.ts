@@ -46,8 +46,10 @@ export const budgetExpenseBarChart = (data: BudgetExpenseProps[]) => {
             scrollablePlotArea: {
                 minHeight: isSmallChart ? 500 : 3000,
                 scrollPositionY: 1,
+                opacity: 0.5,
             },
             marginRight: 100,
+
             zooming: {
                 type: 'y',
                 mouseWheel: {
@@ -58,6 +60,7 @@ export const budgetExpenseBarChart = (data: BudgetExpenseProps[]) => {
         title: {
             text: 'बजेट / खर्च',
         },
+
         exporting: {
             enabled: true,
         },
@@ -287,7 +290,6 @@ export const budgetExpenseLineChart = (
     data: BudgetExpenseProps[],
     months: string[]
 ) => {
-    console.log('Kinna chalana yo hehe')
     const highChartOptions: Highcharts.Options = {
         xAxis: {
             categories: months,

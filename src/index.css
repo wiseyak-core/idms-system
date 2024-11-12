@@ -172,3 +172,7 @@
 * {
     box-sizing: border-box;
 }
+
+.highcharts-scrolling::-webkit-scrollbar {
+    display: none !important;
+}

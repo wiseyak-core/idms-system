@@ -15,6 +15,9 @@ import { useState } from 'react'
 import { useQuery } from 'react-query'
 import { useSearchParams } from 'react-router-dom'
 import { BudgetExpensekeys } from '@/model'
+import exporting from 'highcharts/modules/exporting'
+
+exporting(Highcharts)
 
 const BudgetChart = () => {
     const [searchParams] = useSearchParams()
