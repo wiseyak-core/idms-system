@@ -1,6 +1,9 @@
 import { QUADRIMESTER_SORT } from '@/constant'
 import { getQuadrimesterExpenseService } from '@/services/charts.service'
-import { quadrimesterExpenseBarChart } from '@/utils/quadrimesterHighChartConverter'
+import {
+    quadrimesterExpenseBarChart,
+    quadrimesterExpensePieChart,
+} from '@/utils/quadrimesterHighChartConverter'
 import { quadrimesterSortData } from '@/utils/quadrimesterSortData'
 import { Card, Flex, Select } from 'antd'
 import Highcharts from 'highcharts'
@@ -35,11 +38,11 @@ const QuadrimesterChart = () => {
     const filteredData =
         coreData && coreData.filter((item: any) => item['शीर्षक'] !== '')
 
-    const sortedData =
-        filteredData && quadrimesterSortData(filteredData, sort, quarter)
+    const pieData = filteredData && quadrimesterExpensePieChart(filteredData)
 
-    const structuredData =
-        sortedData && quadrimesterExpenseBarChart(sortedData, quarter)
+    const sortedData = filteredData && quadrimesterSortData(filteredData, sort)
+
+    const structuredData = sortedData && quadrimesterExpenseBarChart(sortedData)
 
     const sortOptions = QUADRIMESTER_SORT.map((item) => ({
         value: item,
@@ -90,6 +93,12 @@ const QuadrimesterChart = () => {
                 id="chart"
                 highcharts={Highcharts}
                 options={structuredData || {}}
+                export
+            />
+            <HighchartsReact
+                id="chart"
+                highcharts={Highcharts}
+                options={pieData || {}}
                 export
             />
         </Card>

@@ -19,7 +19,7 @@ export const QuadrimesterFilter = () => {
 
     const { setTopic, topic } = useTopicSelect()
 
-    const { handleSubmit, control, reset } =
+    const { handleSubmit, control, reset, watch } =
         useForm<QuadrimesterFilterFormSchemaType>({
             resolver: yupResolver(quadrimesterFilterFormSchema),
             defaultValues: {},
@@ -62,6 +62,16 @@ export const QuadrimesterFilter = () => {
     const handleTopicChange = (value: string) => {
         setTopic(value)
     }
+
+    const cities = watch('cities')
+
+    const year = watch('years')
+
+    const quarter = watch('quarter')
+
+    const शीर्षक = watch('शीर्षक')
+
+    console.log(cities, year, quarter, शीर्षक)
 
     const handleFilter = (values: QuadrimesterFilterFormSchemaType) => {
         searchParams.delete('cities')

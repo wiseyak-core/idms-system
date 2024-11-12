@@ -74,6 +74,11 @@ export const budgetExpenseBarChart = (data: BudgetExpenseProps[]) => {
             title: {
                 text: 'बजेट/खर्च रुपैयाँ',
             },
+            labels: {
+                formatter: function () {
+                    return 'Rs ' + convertToNepaliCurrency(this.value as number)
+                },
+            },
         },
         series: series,
     }
@@ -111,7 +116,7 @@ export const budgetExpensePieChart = (
             marginBottom: 100,
         },
         title: {
-            text: 'बजेट / खर्च',
+            text: selectedKey || 'बजेट / खर्च',
         },
         plotOptions: {
             series: {

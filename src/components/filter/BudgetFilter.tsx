@@ -36,8 +36,6 @@ export const BudgetFilter = () => {
     const isSingleSubTitle =
         (cities && cities?.length > 1) || (months && months?.length > 1)
 
-    console.log(isSingleCity, isSingleMonth)
-
     const topicsOptions = TOPICS.map((topic) => ({
         label: topic.replace('_', ' '),
         value: topic,
