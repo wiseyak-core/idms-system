@@ -717,7 +717,10 @@ export const wardWiseBudget = (data: BudgetExpenseProps[]) => {
     return highChartOptions
 }
 
-export const sectorWiseBudget = (data: BudgetExpenseProps[]) => {
+export const sectorWiseBudget = (
+    data: BudgetExpenseProps[],
+    matches: boolean
+) => {
     // Define sectors and their corresponding budget items
     const sectors = [
         {
@@ -815,7 +818,7 @@ export const sectorWiseBudget = (data: BudgetExpenseProps[]) => {
                         fontSize: '11px',
                     },
                 },
-                showInLegend: true,
+                showInLegend: matches ? true : false,
             },
         },
         tooltip: {

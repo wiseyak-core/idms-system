@@ -1,3 +1,6 @@
+import { QUADRIMESTER_TITLE } from '@/constant'
+import { QUARTER } from '@/constant/quarter'
+import { YEAR } from '@/constant/year'
 import {
     createContext,
     PropsWithChildren,
@@ -27,6 +30,16 @@ export const TopicProvider = ({ children }: PropsWithChildren) => {
     }, [searchParams])
     const setTopic = (topic: string) => {
         searchParams.set('topic', topic)
+        switch (topic) {
+            case 'quadrimester_expense':
+                searchParams.set('topic', 'quadrimester_expense')
+                searchParams.set('years', YEAR[0])
+                searchParams.set('quarter', QUARTER[0])
+                searchParams.set('शीर्षक', QUADRIMESTER_TITLE[0])
+                break
+            default:
+                searchParams.set('topic', topic)
+        }
         setSearchParams(searchParams)
         setSelectedTopic(topic)
     }

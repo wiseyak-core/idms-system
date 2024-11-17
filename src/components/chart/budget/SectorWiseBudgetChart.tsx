@@ -1,3 +1,4 @@
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { BudgetExpenseProps } from '@/model'
 import { sectorWiseBudget } from '@/utils/budgetHighChartConverter'
 import { Card } from 'antd'
@@ -13,7 +14,8 @@ const SectorWiseBudgetChart = ({
 }: {
     coreData: BudgetExpenseProps[]
 }) => {
-    const sectorWiseData = sectorWiseBudget(coreData)
+    const matches = useMediaQuery('(min-width: 768px)')
+    const sectorWiseData = sectorWiseBudget(coreData, matches)
 
     return (
         <Card title="क्षेत्रगत बजेट विश्लेषण" style={{ width: '100%' }}>
