@@ -1,19 +1,12 @@
 export const BASE_URL = import.meta.env.VITE_BASE_URL
 
-export const CHART_OPTIONS = ['Area', 'Line']
-
-export const QUADRIMESTER_SORT = [
-    'BUDGET(H TO L)',
-    'BUDGET(L TO H)',
-    'EXPENSE(H TO L)',
-    'EXPENSE(L TO H)',
-]
+export const CHART_OPTIONS = ['Line', 'Area']
 
 export const BUDGET_SORT = [
-    'EXPENSE(H TO L)',
-    'EXPENSE(L TO H)',
     'BUDGET(H TO L)',
     'BUDGET(L TO H)',
+    'EXPENSE(H TO L)',
+    'EXPENSE(L TO H)',
 ]
 
 export const PIE_STATE = ['बजेट', 'खर्च']
@@ -51,7 +44,6 @@ export const SUBTITLE = [
 ]
 
 export const QUADRIMESTER_TITLE = [
-    'all',
     'पारिश्रमिक कर्मचारी',
     'पारिश्रमिक पदाधिकारी',
     'पोशाक',

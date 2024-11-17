@@ -6,7 +6,7 @@ import { useSearchParams } from 'react-router-dom'
 import { CITIES } from '@/constant/cities'
 import FilterSection from '@/components/filter/FilterSection'
 import { TopicProvider } from '@/hooks/useTopicSelect'
-import { MONTHS, SUBTITLE } from '@/constant'
+import { MONTHS } from '@/constant'
 
 export const UserPage = () => {
     const [searchParams, setSearchParams] = useSearchParams()
@@ -20,7 +20,7 @@ export const UserPage = () => {
                 topic: TOPICS[0],
                 cities: CITIES[0],
                 months: MONTHS[0],
-                उपशीर्षक: SUBTITLE[0],
+                उपशीर्षक: 'all',
             })
         }
     }, [])

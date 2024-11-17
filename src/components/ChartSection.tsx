@@ -1,7 +1,7 @@
 import useTopicSelect from '@/hooks/useTopicSelect'
 
 import QuadrimesterChart from './chart/QuadrimesterChart'
-import BudgetChart from './chart/BudgetChart'
+import BudgetChart from './chart/budget/BudgetChart'
 
 const ChartSection = () => {
     const { topic } = useTopicSelect()

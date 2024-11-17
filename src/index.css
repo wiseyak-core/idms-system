@@ -176,3 +176,7 @@
 .highcharts-scrolling::-webkit-scrollbar {
     display: none !important;
 }
+
+ul.highcharts-menu li:nth-child(2) {
+    display: none !important;
+}

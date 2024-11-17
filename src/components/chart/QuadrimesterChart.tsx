@@ -1,6 +1,10 @@
-import { QUADRIMESTER_SORT } from '@/constant'
+import { BUDGET_SORT } from '@/constant'
 import { getQuadrimesterExpenseService } from '@/services/charts.service'
-import { quadrimesterExpenseBarChart } from '@/utils/quadrimesterHighChartConverter'
+import {
+    quadrimesterExpenseAreaChart,
+    quadrimesterExpenseBarChart,
+    quadrimesterExpensePieChart,
+} from '@/utils/quadrimesterHighChartConverter'
 import { quadrimesterSortData } from '@/utils/quadrimesterSortData'
 import { Card, Flex, Select } from 'antd'
 import Highcharts from 'highcharts'
@@ -12,15 +16,16 @@ import { useSearchParams } from 'react-router-dom'
 const QuadrimesterChart = () => {
     const [searchParams] = useSearchParams()
 
+    const chart = 'Area'
+
     const [sort, setSort] = useState()
     const quarter = searchParams.getAll('quarter') || ''
     const years = searchParams.getAll('years') || ''
     const cities = searchParams.getAll('cities') || ''
-    const topic = searchParams.getAll('topic') || ''
     const शीर्षक = searchParams.getAll('शीर्षक') || ''
 
     const { data: chartData } = useQuery({
-        queryKey: [topic, cities, years, quarter, शीर्षक],
+        queryKey: [cities, years, quarter, शीर्षक],
         queryFn: () =>
             getQuadrimesterExpenseService({
                 cities,
@@ -35,35 +40,89 @@ const QuadrimesterChart = () => {
     const filteredData =
         coreData && coreData.filter((item: any) => item['शीर्षक'] !== '')
 
-    const sortedData =
-        filteredData && quadrimesterSortData(filteredData, sort, quarter)
+    const pieData = filteredData && quadrimesterExpensePieChart(filteredData)
 
-    const structuredData =
-        sortedData && quadrimesterExpenseBarChart(sortedData, quarter)
+    const areaGraphData =
+        filteredData &&
+        quadrimesterExpenseAreaChart(filteredData, years, quarter)
 
-    const sortOptions = QUADRIMESTER_SORT.map((item) => ({
+    const sortedData = filteredData && quadrimesterSortData(filteredData, sort)
+
+    const structuredData = sortedData && quadrimesterExpenseBarChart(sortedData)
+
+    const sortOptions = BUDGET_SORT.map((item) => ({
         value: item,
         label: item,
     }))
+
+    const multipleGraphRender = (years: string[], cities: string[]) => {
+        if (years.length > 1 && !शीर्षक.includes('all')) {
+            return (
+                <HighchartsReact
+                    id="chart"
+                    highcharts={Highcharts}
+                    options={
+                        chart === 'Area' ? areaGraphData || {} : {}
+                        // : lineGraphData || {}
+                    }
+                    immutable={true}
+                    export
+                    style={{ zIndex: '-10 !important' }}
+                />
+            )
+        } else if (cities.length > 1 && !शीर्षक.includes('all')) {
+            return (
+                <HighchartsReact
+                    id="chart"
+                    highcharts={Highcharts}
+                    // options={stackedGraphData || {}}
+                    options={{}}
+                    immutable={true}
+                    export
+                    style={{ zIndex: '-10 !important' }}
+                />
+            )
+        }
+        return (
+            <HighchartsReact
+                id="chart"
+                highcharts={Highcharts}
+                immutable={true}
+                options={structuredData || {}}
+                export
+                style={{ zIndex: '-10 !important' }}
+            />
+        )
+    }
 
     return (
         <Card
             title="Charts"
             style={{
-                flexGrow: 1,
+                overflowY: 'auto',
                 width: '100%',
                 display: 'flex',
                 height: '100%',
                 flexDirection: 'column',
             }}
+            styles={{
+                body: {
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
+                    width: '100%',
+                    maxHeight: '100vh',
+                    overflowY: 'auto',
+                },
+                header: {
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    zIndex: '50',
+                },
+            }}
         >
-            <Flex
-                align="center"
-                justify="flex-start"
-                style={{
-                    marginBottom: 20,
-                }}
-            >
+            <Flex align="center" justify="space-between">
                 <Flex vertical>
                     <h3>Select Sort:</h3>
                     <Select
@@ -86,12 +145,16 @@ const QuadrimesterChart = () => {
                     />
                 </Flex>
             </Flex>
-            <HighchartsReact
-                id="chart"
-                highcharts={Highcharts}
-                options={structuredData || {}}
-                export
-            />
+            <Flex vertical>
+                {multipleGraphRender(years, cities)}
+                <HighchartsReact
+                    id="chart"
+                    highcharts={Highcharts}
+                    immutable={true}
+                    options={pieData || {}}
+                    export
+                />
+            </Flex>
         </Card>
     )
 }
