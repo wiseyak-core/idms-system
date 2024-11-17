@@ -12,7 +12,7 @@ import useTopicSelect from '@/hooks/useTopicSelect'
 import { useEffect } from 'react'
 import { MONTHS, SUBTITLE } from '@/constant'
 
-export const BudgetFilter = () => {
+export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
     const [searchParams, setSearchParams] = useSearchParams()
 
     const { setTopic, topic } = useTopicSelect()
@@ -85,6 +85,7 @@ export const BudgetFilter = () => {
             )
             setSearchParams(searchParams)
         }
+        onClose && onClose()
     }
 
     useEffect(() => {
@@ -112,11 +113,14 @@ export const BudgetFilter = () => {
         <Card
             title="Select Filters"
             style={{
-                minWidth: '300px',
-                maxWidth: '300px',
                 height: '100%',
                 width: '100%',
                 flex: 1,
+            }}
+            styles={{
+                body: {
+                    width: '100%',
+                },
             }}
         >
             <form onSubmit={handleSubmit(handleFilter)}>
@@ -283,6 +287,7 @@ export const BudgetFilter = () => {
                                 months: MONTHS[0],
                                 उपशीर्षक: 'all',
                             })
+                            onClose && onClose()
                         }}
                     >
                         Default

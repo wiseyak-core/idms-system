@@ -141,8 +141,17 @@ const BudgetChart = () => {
                 marginBottom: 20,
             }}
         >
-            <Card title="Basic Charts">
-                <Flex align="center" justify="space-between">
+            <Card
+                title="Basic Charts"
+                styles={{
+                    body: {
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 8,
+                    },
+                }}
+            >
+                <Flex align="center" justify="flex-end" gap={8}>
                     {months.length <= 1 && cities.length <= 1 && (
                         <Flex vertical>
                             <h3>Select Sort:</h3>
@@ -209,7 +218,7 @@ const BudgetChart = () => {
                 }}
                 gutter={8}
             >
-                <Col span={14}>
+                <Col xs={24} md={24} lg={14}>
                     <Card
                         title="Heat Map"
                         style={{
@@ -226,7 +235,7 @@ const BudgetChart = () => {
                         />
                     </Card>
                 </Col>
-                <Col span={10}>
+                <Col xs={24} md={24} lg={10}>
                     <Card title="Pie Chart">
                         <Flex vertical gap={8}>
                             <h3>Select expense/budget: </h3>
