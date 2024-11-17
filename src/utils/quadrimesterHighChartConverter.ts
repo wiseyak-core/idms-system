@@ -1,6 +1,8 @@
 import { QuadrimesterExpenseType } from '@/model'
 import { SeriesOptionsType } from 'highcharts'
+import convertToNepaliCurrency from './currencyConverter'
 
+//Bar Chart
 export const quadrimesterExpenseBarChart = (
     data: QuadrimesterExpenseType[]
 ) => {
@@ -39,7 +41,7 @@ export const quadrimesterExpenseBarChart = (
         chart: {
             type: 'bar',
             scrollablePlotArea: {
-                minHeight: isSmallChart ? 100 : 1500,
+                minHeight: isSmallChart ? 500 : 3000,
                 scrollPositionY: 1,
             },
             zooming: {
@@ -65,11 +67,18 @@ export const quadrimesterExpenseBarChart = (
             title: {
                 text: 'बजेट/खर्च रुपैयाँ',
             },
+            labels: {
+                formatter: function () {
+                    return 'Rs ' + convertToNepaliCurrency(this.value as number)
+                },
+            },
         },
         series: series,
     }
     return highChartOptions
 }
+
+// Pie Chart
 
 export const quadrimesterExpensePieChart = (
     data: QuadrimesterExpenseType[]
@@ -157,6 +166,51 @@ export const quadrimesterExpensePieChart = (
                             totalData['तेस्रो चौमासिक खर्च'],
                     },
                 ],
+            },
+        ],
+    }
+    return highChartOptions
+}
+
+export const quadrimesterExpenseAreaChart = (
+    data: QuadrimesterExpenseType[],
+    quarter?: string[],
+    years?: string[]
+) => {
+    const highChartOptions: Highcharts.Options = {
+        chart: {
+            type: 'area',
+        },
+        xAxis: {
+            categories: quarter || years || [],
+        },
+        yAxis: {
+            labels: {
+                formatter: function () {
+                    return 'Rs ' + convertToNepaliCurrency(this.value as number)
+                },
+            },
+        },
+        series: [
+            {
+                name: 'चौमासिक खर्च',
+                data: data.map(
+                    (item) =>
+                        item['प्रथम चौमासिक खर्च'] ||
+                        item['दोश्रो चौमासिक खर्च'] ||
+                        item['तेस्रो चौमासिक खर्च']
+                ),
+                type: 'area',
+            },
+            {
+                name: 'चौमासिक बजेट',
+                data: data.map(
+                    (item) =>
+                        item['प्रथम चौमासिक बजेट'] ||
+                        item['दोश्रो चौमासिक	बजेट'] ||
+                        item['तेस्रो चौमासिक	बजेट']
+                ),
+                type: 'area',
             },
         ],
     }

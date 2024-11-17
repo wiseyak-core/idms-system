@@ -2,7 +2,7 @@ import { CITIES } from '@/constant/cities'
 import { QUARTER } from '@/constant/quarter'
 import { TOPICS } from '@/constant/topics'
 import { YEAR } from '@/constant/year'
-import { Card, Flex, Select, Button } from 'antd'
+import { Card, Flex, Select, Button, Checkbox } from 'antd'
 import { Controller, useForm } from 'react-hook-form'
 import { useSearchParams } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -12,7 +12,7 @@ import {
 } from '@/schema/quadrimesterfilter.schema'
 import useTopicSelect from '@/hooks/useTopicSelect'
 import { useEffect } from 'react'
-import { QUADRIMESTER_TITLE } from '@/constant'
+import { MONTHS, QUADRIMESTER_TITLE } from '@/constant'
 
 export const QuadrimesterFilter = () => {
     const [searchParams, setSearchParams] = useSearchParams()
@@ -24,6 +24,34 @@ export const QuadrimesterFilter = () => {
             resolver: yupResolver(quadrimesterFilterFormSchema),
             defaultValues: {},
         })
+
+    const cities = watch('cities')
+
+    const year = watch('years')
+
+    const quarter = watch('quarter')
+
+    const शीर्षक = watch('शीर्षक')
+
+    const isSingleCity =
+        (year && year.length > 1) ||
+        (quarter && quarter.length > 1) ||
+        (शीर्षक && शीर्षक.length > 1)
+
+    const isSingleYear =
+        (cities && cities.length > 1) ||
+        (quarter && quarter.length > 1) ||
+        (शीर्षक && शीर्षक.length > 1)
+
+    const isSingleQuarter =
+        (cities && cities.length > 1) ||
+        (year && year.length > 1) ||
+        (शीर्षक && शीर्षक.length > 1)
+
+    const isSingleTitle =
+        (cities && cities.length > 1) ||
+        (year && year.length > 1) ||
+        (quarter && quarter.length > 1)
 
     useEffect(() => {
         reset({
@@ -62,16 +90,6 @@ export const QuadrimesterFilter = () => {
     const handleTopicChange = (value: string) => {
         setTopic(value)
     }
-
-    const cities = watch('cities')
-
-    const year = watch('years')
-
-    const quarter = watch('quarter')
-
-    const शीर्षक = watch('शीर्षक')
-
-    console.log(cities, year, quarter, शीर्षक)
 
     const handleFilter = (values: QuadrimesterFilterFormSchemaType) => {
         searchParams.delete('cities')
@@ -130,6 +148,12 @@ export const QuadrimesterFilter = () => {
                                         onChange={(e) => {
                                             onChange(e)
                                         }}
+                                        maxCount={
+                                            शीर्षक?.includes('all') ||
+                                            isSingleCity
+                                                ? 1
+                                                : citiesOptions.length
+                                        }
                                         mode="multiple"
                                         value={value}
                                         popupClassName="capitalizeWords"
@@ -178,6 +202,12 @@ export const QuadrimesterFilter = () => {
                                         onChange={(e) => {
                                             onChange(e)
                                         }}
+                                        maxCount={
+                                            isSingleYear ||
+                                            शीर्षक?.includes('all')
+                                                ? 1
+                                                : citiesOptions.length
+                                        }
                                         mode="multiple"
                                         value={value}
                                         popupClassName="capitalizeWords"
@@ -206,6 +236,12 @@ export const QuadrimesterFilter = () => {
                                         onChange={(e) => {
                                             onChange(e)
                                         }}
+                                        maxCount={
+                                            शीर्षक?.includes('all') ||
+                                            isSingleQuarter
+                                                ? 1
+                                                : citiesOptions.length
+                                        }
                                         mode="multiple"
                                         popupClassName="capitalizeWords"
                                         rootClassName="capitalizeWords"
@@ -228,30 +264,81 @@ export const QuadrimesterFilter = () => {
                                 name="शीर्षक"
                                 control={control}
                                 render={({ field: { onChange, value } }) => (
-                                    <Select
-                                        value={value}
-                                        onChange={(e) => {
-                                            onChange(e)
-                                        }}
-                                        mode="multiple"
-                                        popupClassName="capitalizeWords"
-                                        rootClassName="capitalizeWords"
-                                        size="middle"
-                                        showSearch
-                                        placeholder="Select a शीर्षक"
-                                        filterOption={(input, option) =>
-                                            (option?.label ?? '')
-                                                .toLowerCase()
-                                                .includes(input.toLowerCase())
-                                        }
-                                        options={titleOptions}
-                                    />
+                                    <Flex
+                                        justify="space-between"
+                                        align="start"
+                                        gap={10}
+                                        vertical
+                                    >
+                                        <Select
+                                            value={
+                                                value?.includes('all')
+                                                    ? []
+                                                    : value
+                                            }
+                                            onChange={(e) => {
+                                                onChange(e)
+                                            }}
+                                            style={{ width: '100%' }}
+                                            maxCount={isSingleTitle ? 1 : 5}
+                                            mode="multiple"
+                                            popupClassName="capitalizeWords"
+                                            rootClassName="capitalizeWords"
+                                            size="middle"
+                                            showSearch
+                                            placeholder="Select a शीर्षक"
+                                            filterOption={(input, option) =>
+                                                (option?.label ?? '')
+                                                    .toLowerCase()
+                                                    .includes(
+                                                        input.toLowerCase()
+                                                    )
+                                            }
+                                            options={titleOptions}
+                                        />
+                                        <Checkbox
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                            }}
+                                            checked={value?.includes('all')}
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    onChange(['all'])
+                                                } else {
+                                                    onChange([])
+                                                }
+                                            }}
+                                            disabled={
+                                                isSingleCity ||
+                                                isSingleYear ||
+                                                isSingleQuarter
+                                            }
+                                        >
+                                            All
+                                        </Checkbox>
+                                    </Flex>
                                 )}
                             />
                         </Flex>
                     </Flex>
                     <Button type="primary" htmlType="submit">
                         Filter
+                    </Button>
+                    <Button
+                        type="default"
+                        onClick={() => {
+                            setSearchParams({
+                                ...searchParams,
+                                topic: TOPICS[0],
+                                cities: CITIES[0],
+                                months: MONTHS[0],
+                                उपशीर्षक: 'all',
+                            })
+                        }}
+                    >
+                        Default
                     </Button>
                 </Flex>
             </form>

@@ -235,22 +235,16 @@ export const BudgetFilter = () => {
                                             size="middle"
                                             showSearch
                                             placeholder="Select a उपशीर्षक"
-                                        >
-                                            {subTitleOptions.map((option) => (
-                                                <Select.Option
-                                                    key={option.value}
-                                                    value={option.value}
-                                                    disabled={
-                                                        option.value ===
-                                                            'all' &&
-                                                        (isSingleCity ||
-                                                            isSingleMonth)
-                                                    }
-                                                >
-                                                    {option.label}
-                                                </Select.Option>
-                                            ))}
-                                        </Select>
+                                            filterOption={(input, option) =>
+                                                (option?.label ?? '')
+                                                    .toLowerCase()
+                                                    .includes(
+                                                        input.toLowerCase()
+                                                    )
+                                            }
+                                            options={subTitleOptions}
+                                        />
+
                                         <Checkbox
                                             style={{
                                                 display: 'flex',
@@ -278,6 +272,20 @@ export const BudgetFilter = () => {
                     </Flex>
                     <Button type="primary" htmlType="submit">
                         Filter
+                    </Button>
+                    <Button
+                        type="default"
+                        onClick={() => {
+                            setSearchParams({
+                                ...searchParams,
+                                topic: TOPICS[0],
+                                cities: CITIES[0],
+                                months: MONTHS[0],
+                                उपशीर्षक: 'all',
+                            })
+                        }}
+                    >
+                        Default
                     </Button>
                 </Flex>
             </form>
