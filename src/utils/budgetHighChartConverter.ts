@@ -212,8 +212,8 @@ export const budgetExpensePieChart = (
     pieState: BudgetExpensekeys | undefined
 ) => {
     // Filter out total row and calculate sums
-    const remainingData = data.filter((item) => item['क्र.सं.'] !== 'जम्मा')
-    const totalData = remainingData.reduce(
+    const remainingData = data?.filter((item) => item['क्र.सं.'] !== 'जम्मा')
+    const totalData = remainingData?.reduce(
         (acc, item) => {
             acc['बजेट चालु'] += item['बजेट चालु']
             acc['बजेट पूंजीगत'] += item['बजेट पूंजीगत']
@@ -397,32 +397,32 @@ export const budgetExpenseStackedChart = (
         series: [
             {
                 name: 'बजेट चालु',
-                data: data.map((item) => item['बजेट चालु']),
+                data: data.map((item) => item['बजेट चालु']) || [],
                 type: 'column',
             },
             {
                 name: 'खर्च चालु',
-                data: data.map((item) => item['खर्च चालु']),
+                data: data.map((item) => item['खर्च चालु']) || [],
                 type: 'column',
             },
             {
                 name: 'बजेट पूंजीगत',
-                data: data.map((item) => item['बजेट पूंजीगत']),
+                data: data.map((item) => item['बजेट पूंजीगत']) || [],
                 type: 'column',
             },
             {
                 name: 'खर्च पूंजीगत',
-                data: data.map((item) => item['खर्च पूंजीगत']),
+                data: data.map((item) => item['खर्च पूंजीगत']) || [],
                 type: 'column',
             },
             {
                 name: 'बजेट जम्मा',
-                data: data.map((item) => item['बजेट जम्मा']),
+                data: data.map((item) => item['बजेट जम्मा']) || [],
                 type: 'column',
             },
             {
                 name: 'खर्च जम्मा',
-                data: data.map((item) => item['खर्च जम्मा']),
+                data: data.map((item) => item['खर्च जम्मा']) || [],
                 type: 'column',
             },
         ],
@@ -857,4 +857,168 @@ export const sectorWiseBudget = (
     }
 
     return highChartOptions
+}
+
+export const budgetExpenseTableMonth = (data: BudgetExpenseProps[]) => {
+    // Get unique budget titles and months
+    const uniqueTitles = [
+        ...new Set(data.map((item) => item['बजेट उपशीर्षक नाम'])),
+    ]
+    const months = [...new Set(data.map((item) => item.month))]
+
+    // Create a mapping of title and month to their respective values
+    const valueMap = new Map()
+    data.forEach((item) => {
+        const key = `${item['बजेट उपशीर्षक नाम']}_${item.month}`
+        valueMap.set(key, {
+            budget: item['बजेट जम्मा'],
+            expense: item['खर्च जम्मा'],
+            balance: item['मौज्दात जम्मा'],
+        })
+    })
+
+    // Create columns data structure
+    const columns: Record<string, any[]> = {
+        title: uniqueTitles,
+    }
+
+    // Initialize and populate budget, expense, and balance columns for each month
+    months.forEach((month) => {
+        columns[`budget_${month}`] = uniqueTitles.map((title) => {
+            const key = `${title}_${month}`
+            return valueMap.get(key)?.budget ?? 0
+        })
+
+        columns[`expense_${month}`] = uniqueTitles.map((title) => {
+            const key = `${title}_${month}`
+            return valueMap.get(key)?.expense ?? 0
+        })
+
+        columns[`balance_${month}`] = uniqueTitles.map((title) => {
+            const key = `${title}_${month}`
+            return valueMap.get(key)?.balance ?? 0
+        })
+    })
+
+    return {
+        dataTable: {
+            columns: columns,
+        },
+        header: [
+            'title',
+            ...months.map((month) => ({
+                format: capitalizeFirstLetter(month),
+                columns: [
+                    {
+                        format: 'Budget Details',
+                        columns: [
+                            {
+                                columnId: `budget_${month}`,
+                                format: 'Budget',
+                            },
+                            {
+                                columnId: `expense_${month}`,
+                                format: 'Expense',
+                            },
+                            {
+                                columnId: `balance_${month}`,
+                                format: 'Balance',
+                            },
+                        ],
+                    },
+                ],
+            })),
+        ],
+        columns: [
+            {
+                id: 'title',
+                header: {
+                    format: 'Budget Title',
+                },
+            },
+        ],
+    }
+}
+
+const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
+}
+
+export const budgetExpenseCityTable = (data: BudgetExpenseProps[]) => {
+    // Get unique budget titles and cities
+    const uniqueTitles = [
+        ...new Set(data.map((item) => item['बजेट उपशीर्षक नाम'])),
+    ]
+    const cities = [...new Set(data.map((item) => item.city))]
+
+    // Create a mapping of title and city to their respective values
+    const valueMap = new Map()
+    data.forEach((item) => {
+        const key = `${item['बजेट उपशीर्षक नाम']}_${item.city}`
+        valueMap.set(key, {
+            budget: item['बजेट जम्मा'],
+            expense: item['खर्च जम्मा'],
+            balance: item['मौज्दात जम्मा'],
+        })
+    })
+
+    // Create columns data structure
+    const columns: Record<string, any[]> = {
+        title: uniqueTitles,
+    }
+
+    // Initialize and populate budget, expense, and balance columns for each city
+    cities.forEach((city) => {
+        columns[`budget_${city}`] = uniqueTitles.map((title) => {
+            const key = `${title}_${city}`
+            return valueMap.get(key)?.budget ?? 0
+        })
+        columns[`expense_${city}`] = uniqueTitles.map((title) => {
+            const key = `${title}_${city}`
+            return valueMap.get(key)?.expense ?? 0
+        })
+        columns[`balance_${city}`] = uniqueTitles.map((title) => {
+            const key = `${title}_${city}`
+            return valueMap.get(key)?.balance ?? 0
+        })
+    })
+
+    return {
+        dataTable: {
+            columns: columns,
+        },
+        header: [
+            'title',
+            ...cities.map((city) => ({
+                format: capitalizeFirstLetter(city),
+                columns: [
+                    {
+                        format: 'Budget Details',
+                        columns: [
+                            {
+                                columnId: `budget_${city}`,
+                                format: 'Budget',
+                            },
+                            {
+                                columnId: `expense_${city}`,
+                                format: 'Expense',
+                            },
+                            {
+                                columnId: `balance_${city}`,
+                                format: 'Balance',
+                            },
+                        ],
+                    },
+                ],
+            })),
+        ],
+        columns: [
+            {
+                id: 'title',
+                header: {
+                    format: 'Budget Title',
+                },
+            },
+        ],
+    }
 }

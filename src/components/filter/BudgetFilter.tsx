@@ -27,14 +27,9 @@ export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
     const months = watch('months')
     const उपशीर्षक = watch('उपशीर्षक')
 
-    const isSingleCity =
-        (months && months?.length > 1) || (उपशीर्षक && उपशीर्षक?.length > 1)
+    const isSingleCity = months && months?.length > 1
 
-    const isSingleMonth =
-        (cities && cities?.length > 1) || (उपशीर्षक && उपशीर्षक?.length > 1)
-
-    const isSingleSubTitle =
-        (cities && cities?.length > 1) || (months && months?.length > 1)
+    const isSingleMonth = cities && cities?.length > 1
 
     const topicsOptions = TOPICS.map((topic) => ({
         label: topic.replace('_', ' '),
@@ -139,13 +134,15 @@ export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
                                         rootClassName="capitalizeWords"
                                         size="middle"
                                         mode="multiple"
-                                        maxCount={
-                                            उपशीर्षक?.includes('all') ||
-                                            isSingleCity
-                                                ? 1
-                                                : citiesOptions.length
-                                        }
                                         showSearch
+                                        maxCount={
+                                            months &&
+                                            उपशीर्षक &&
+                                            (months?.length > 1 ||
+                                                उपशीर्षक?.length > 1)
+                                                ? 1
+                                                : undefined
+                                        }
                                         placeholder="Select a district"
                                         filterOption={(input, option) =>
                                             (option?.label ?? '')
@@ -187,16 +184,18 @@ export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
                                         mode="multiple"
                                         value={value}
                                         onChange={onChange}
-                                        maxCount={
-                                            isSingleMonth ||
-                                            उपशीर्षक?.includes('all')
-                                                ? 1
-                                                : citiesOptions.length
-                                        }
                                         popupClassName="capitalizeWords"
                                         rootClassName="capitalizeWords"
                                         size="middle"
                                         showSearch
+                                        maxCount={
+                                            उपशीर्षक &&
+                                            cities &&
+                                            (cities?.length > 1 ||
+                                                उपशीर्षक?.length > 1)
+                                                ? 1
+                                                : undefined
+                                        }
                                         placeholder="Select a month"
                                         filterOption={(input, option) =>
                                             (option?.label ?? '')
@@ -233,7 +232,14 @@ export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
                                                 width: '100%',
                                             }}
                                             mode="multiple"
-                                            maxCount={isSingleSubTitle ? 1 : 5}
+                                            maxCount={
+                                                cities &&
+                                                months &&
+                                                (cities.length > 1 ||
+                                                    months.length > 1)
+                                                    ? 1
+                                                    : 5
+                                            }
                                             popupClassName="capitalizeWords"
                                             rootClassName="capitalizeWords"
                                             size="middle"
@@ -263,9 +269,6 @@ export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
                                                     onChange([])
                                                 }
                                             }}
-                                            disabled={
-                                                isSingleCity || isSingleMonth
-                                            }
                                         >
                                             All
                                         </Checkbox>

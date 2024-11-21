@@ -1,4 +1,4 @@
-FROM node:v20.15.0
+FROM node:20.15.0
 
 WORKDIR /idms-system
 

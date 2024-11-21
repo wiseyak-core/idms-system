@@ -1388,6 +1388,11 @@
   dependencies:
     levn "^0.4.1"
 
+"@highcharts/dashboards@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@highcharts/dashboards/-/dashboards-3.0.0.tgz#25c550866709c568688f6ee251d24f97a87da050"
+  integrity sha512-5Y9y46YKuOGKwvfKan0qqjX658vWYD+tXSE6uYlAEBQ1jU5gYEZzJ3gMabU4XcK1aAo/0xOC62MXnp482UiQCw==
+
 "@hookform/resolvers@^3.9.1":
   version "3.9.1"
   resolved "https://registry.yarnpkg.com/@hookform/resolvers/-/resolvers-3.9.1.tgz#a23883c40bfd449cb6c6ab5a0fa0729184c950ff"
