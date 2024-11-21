@@ -27,10 +27,6 @@ export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
     const months = watch('months')
     const उपशीर्षक = watch('उपशीर्षक')
 
-    const isSingleCity = months && months?.length > 1
-
-    const isSingleMonth = cities && cities?.length > 1
-
     const topicsOptions = TOPICS.map((topic) => ({
         label: topic.replace('_', ' '),
         value: topic,
