@@ -3,6 +3,7 @@ export type DatasetTableProps = {
     name: string
     url: string
     uploadedAt: string
+    category: string
 }
 
 export type BudgetExpensekeys = 'बजेट' | 'खर्च'

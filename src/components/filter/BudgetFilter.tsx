@@ -1,6 +1,6 @@
 import { CITIES } from '@/constant/cities'
 import { TOPICS } from '@/constant/topics'
-import { Card, Flex, Select, Button, Checkbox } from 'antd'
+import { Card, Flex, Select, Button, Checkbox, Divider } from 'antd'
 import { Controller, useForm } from 'react-hook-form'
 import { useSearchParams } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -273,24 +273,29 @@ export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
                             />
                         </Flex>
                     </Flex>
-                    <Button type="primary" htmlType="submit">
-                        Filter
-                    </Button>
-                    <Button
-                        type="default"
-                        onClick={() => {
-                            setSearchParams({
-                                ...searchParams,
-                                topic: TOPICS[0],
-                                cities: CITIES[0],
-                                months: MONTHS[0],
-                                उपशीर्षक: 'all',
-                            })
-                            onClose && onClose()
-                        }}
-                    >
-                        Default
-                    </Button>
+                    <Flex vertical gap={4}>
+                        <Button type="primary" htmlType="submit">
+                            Filter
+                        </Button>
+                        <Divider />
+                        <Button
+                            type="default"
+                            onClick={() => {
+                                setSearchParams({
+                                    ...searchParams,
+                                    topic: TOPICS[0],
+                                    cities: CITIES[0],
+                                    months: MONTHS[0],
+                                    उपशीर्षक: 'all',
+                                })
+                                onClose && onClose()
+                            }}
+                        >
+                            Default
+                        </Button>
+                        <Divider />
+                        <Button type="default">Guide</Button>
+                    </Flex>
                 </Flex>
             </form>
         </Card>
