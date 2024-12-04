@@ -11,8 +11,12 @@ import {
 import useTopicSelect from '@/hooks/useTopicSelect'
 import { useEffect } from 'react'
 import { MONTHS, SUBTITLE } from '@/constant'
+import GuideSection from '../GuideSection'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
+    const matches = useMediaQuery('(min-width: 1024px)')
+
     const [searchParams, setSearchParams] = useSearchParams()
 
     const { setTopic, topic } = useTopicSelect()
@@ -294,7 +298,7 @@ export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
                             Default
                         </Button>
                         <Divider />
-                        <Button type="default">Guide</Button>
+                        {matches && <GuideSection />}
                     </Flex>
                 </Flex>
             </form>

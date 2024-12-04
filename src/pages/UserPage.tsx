@@ -9,6 +9,7 @@ import { TopicProvider } from '@/hooks/useTopicSelect'
 import { MONTHS } from '@/constant'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import BudgetFilterDrawer from '@/components/chart/budget/BudgetFilterDrawer'
+import GuideSection from '@/components/GuideSection'
 // import GuideSection from '@/components/GuideSection'
 
 export const UserPage = () => {
@@ -55,7 +56,10 @@ export const UserPage = () => {
                             marginBottom: '1rem',
                         }}
                     >
-                        <BudgetFilterDrawer />
+                        <Flex justify="space-between" align="center">
+                            <BudgetFilterDrawer />
+                            <GuideSection />
+                        </Flex>
                     </Col>
                 )}
                 <Col xs={24} sm={24} md={24} lg={19}>

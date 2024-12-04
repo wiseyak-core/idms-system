@@ -1,61 +1,104 @@
-import { Card, Typography } from 'antd'
+import { Button, Modal, Typography, Space, List } from 'antd'
+import { useState } from 'react'
 
 const { Paragraph } = Typography
 
 const GuideSection = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false)
+
+    const showModal = () => {
+        setIsModalOpen(true)
+    }
+
+    const handleOk = () => {
+        setIsModalOpen(false)
+    }
+
+    const handleCancel = () => {
+        setIsModalOpen(false)
+    }
+
+    const guideItems = [
+        {
+            key: 'districts',
+            title: 'Districts :',
+            description:
+                'Select multiple districts (max 1 if other filters have multiple selections)',
+        },
+        {
+            key: 'categories',
+            title: 'Categories :',
+            description: 'Choose a single category from available options',
+        },
+        {
+            key: 'months',
+            title: 'Months :',
+            description:
+                'Pick multiple months (limited to 1 if districts or subtitles have multiple selections)',
+        },
+        {
+            key: 'subtitles',
+            title: 'Subtitles (उपशीर्षक) :',
+            description: 'Select specific subtitles or check "All"',
+        },
+        {
+            key: 'note',
+            title: '',
+            description:
+                'Some selections may be disabled to maintain data clarity',
+        },
+    ]
+
     return (
-        <Card
-            title="Filter Guide"
-            style={{ width: '100%' }}
-            styles={{
-                body: {
-                    maxHeight: '200px',
-                    overflowY: 'auto',
-                },
-            }}
-        >
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                }}
+        <>
+            <Button type="primary" onClick={showModal}>
+                View Filter Guide
+            </Button>
+
+            <Modal
+                title="Filter Guide"
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key="close" onClick={handleCancel}>
+                        Close
+                    </Button>,
+                ]}
             >
-                <ul
-                    style={{
-                        paddingLeft: '20px',
-                        margin: 0,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '8px',
-                    }}
+                <Space
+                    direction="vertical"
+                    size="middle"
+                    style={{ width: '100%' }}
                 >
-                    <li>
-                        <strong>Districts:</strong> Select multiple districts
-                        (max 1 if other filters have multiple selections)
-                    </li>
-                    <li>
-                        <strong>Categories:</strong> Choose a single category
-                        from available options
-                    </li>
-                    <li>
-                        <strong>Months:</strong> Pick multiple months (limited
-                        to 1 if districts or subtitles have multiple selections)
-                    </li>
-                    <li>
-                        <strong>Subtitles (उपशीर्षक):</strong> Select specific
-                        subtitles or check "All"
-                    </li>
-                    <li>
-                        Some selections may be disabled to maintain data clarity
-                    </li>
-                </ul>
-                <Paragraph type="secondary" style={{ fontSize: '12px' }}>
-                    Note: Filter options adjust dynamically based on your
-                    selections to prevent overwhelming data views.
-                </Paragraph>
-            </div>
-        </Card>
+                    <List
+                        itemLayout="vertical"
+                        dataSource={guideItems}
+                        renderItem={(item) => (
+                            <List.Item>
+                                {item.title && (
+                                    <Typography.Text
+                                        strong
+                                        style={{
+                                            marginRight: '0.5rem',
+                                        }}
+                                    >
+                                        {item.title}
+                                    </Typography.Text>
+                                )}
+                                <Typography.Text>
+                                    {item.description}
+                                </Typography.Text>
+                            </List.Item>
+                        )}
+                    />
+                    <Paragraph type="secondary" style={{ fontSize: '12px' }}>
+                        Note: Filter options adjust dynamically based on your
+                        selections to prevent overwhelming data views.
+                    </Paragraph>
+                </Space>
+            </Modal>
+        </>
     )
 }
 
