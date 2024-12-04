@@ -180,3 +180,37 @@
 ul.highcharts-menu li:nth-child(2) {
     display: none !important;
 }
+
+.highcharts-datagrid-row {
+    background: #f8f8f8 !important;
+    color: #0e011c !important;
+    border-color: #0e011c !important;
+}
+
+.highcharts-datagrid-row-odd {
+    background: #dbdbdb !important;
+    color: #0e011c !important;
+    border-color: #0e011c !important;
+}
+
+.highcharts-datagrid-hovered-row {
+    background: #d2d2d2 !important;
+    border-color: #0e011c !important;
+}
+
+.highcharts-datagrid-hovered-column {
+    background: rgba(0, 0, 0, 0.1) !important;
+    border-color: #0e011c !important;
+}
+
+.highcharts-datagrid-credits-container {
+    background: #f8f8f8 !important;
+    color: #0e011c !important;
+    border-color: #0e011c !important;
+}
+
+.highcharts-datagrid-header-cell {
+    background: #f8f8f8 !important;
+    color: #0e011c !important;
+    border-color: #0e011c !important;
+}

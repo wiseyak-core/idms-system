@@ -1,4 +1,3 @@
-// https://ant.design/components/layout layout code from here
 import { Flex, Layout } from 'antd'
 import Sidebar from './Sidebar'
 import { Outlet } from 'react-router-dom'

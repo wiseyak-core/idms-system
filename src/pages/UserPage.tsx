@@ -1,6 +1,6 @@
 import ChartSection from '@/components/ChartSection'
 import { TOPICS } from '@/constant/topics'
-import { Col, Row } from 'antd'
+import { Col, Flex, Row } from 'antd'
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { CITIES } from '@/constant/cities'
@@ -9,6 +9,8 @@ import { TopicProvider } from '@/hooks/useTopicSelect'
 import { MONTHS } from '@/constant'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import BudgetFilterDrawer from '@/components/chart/budget/BudgetFilterDrawer'
+import GuideSection from '@/components/GuideSection'
+// import GuideSection from '@/components/GuideSection'
 
 export const UserPage = () => {
     const [searchParams, setSearchParams] = useSearchParams()
@@ -43,7 +45,9 @@ export const UserPage = () => {
             >
                 {matches ? (
                     <Col xs={24} sm={24} md={24} lg={5}>
-                        <FilterSection />
+                        <Flex vertical gap={8}>
+                            <FilterSection />
+                        </Flex>
                     </Col>
                 ) : (
                     <Col
@@ -52,7 +56,10 @@ export const UserPage = () => {
                             marginBottom: '1rem',
                         }}
                     >
-                        <BudgetFilterDrawer />
+                        <Flex justify="space-between" align="center">
+                            <BudgetFilterDrawer />
+                            <GuideSection />
+                        </Flex>
                     </Col>
                 )}
                 <Col xs={24} sm={24} md={24} lg={19}>
