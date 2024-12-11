@@ -1,3 +1,4 @@
+import { queryClient } from '@/App'
 import { BASE_URL } from '@/constant'
 import { CITIES } from '@/constant/cities'
 import { TOPICS } from '@/constant/topics'
@@ -45,8 +46,6 @@ const UploadDataSetModal = () => {
         },
     })
 
-    console.log(errors.month?.message)
-
     // Watch the category field
     const category = watch('category')
 
@@ -69,7 +68,7 @@ const UploadDataSetModal = () => {
             const formData = new FormData()
             formData.append('file', data.file)
 
-            return axios.post(BASE_URL + 'api/dataset', formData, {
+            return axios.post(BASE_URL + '/api/dataset', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -83,6 +82,7 @@ const UploadDataSetModal = () => {
         },
         onSuccess: () => {
             message.success('Dataset uploaded successfully')
+            queryClient.invalidateQueries({ queryKey: ['dataset'] })
             setIsModalOpen(false)
             reset()
             clearUpload()

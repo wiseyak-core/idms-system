@@ -1,6 +1,6 @@
 import { BASE_URL } from '@/constant'
 import {
-    BudgetExpenseProps,
+    BudgetData,
     QuadrimesterExpenseProps,
     QuadrimesterExpenseType,
 } from '@/model'
@@ -33,7 +33,7 @@ export const getGenericDataService = ({
     if (topics === 'quadrimester_expense') {
         const quadrimester_expense_response =
             axios.get<QuadrimesterExpenseProps>(
-                BASE_URL + 'quadrimester_expense/qe',
+                BASE_URL + '/quadrimester_expense/qe',
                 {
                     params: {
                         city: cities,
@@ -77,7 +77,7 @@ export const getQuadrimesterExpenseService = ({
     शीर्षक: string[]
 }): Promise<AxiosResponse<QuadrimesterExpenseType[]>> => {
     const quadrimester_expense_response = axios.get<QuadrimesterExpenseType[]>(
-        BASE_URL + 'quadrimester_expense/qe',
+        BASE_URL + '/quadrimester_expense/qe',
         {
             params: {
                 cities,
@@ -109,7 +109,7 @@ export const useGenericAPIQuery = (props: GenericDataServiceProps) => {
         case 'quadrimester_expense':
             const quadrimester_expense_response =
                 axios.get<QuadrimesterExpenseProps>(
-                    BASE_URL + 'quadrimester_expense',
+                    BASE_URL + '/quadrimester_expense',
                     {
                         params: {
                             city: city,
@@ -121,7 +121,7 @@ export const useGenericAPIQuery = (props: GenericDataServiceProps) => {
             return quadrimester_expense_response
         case 'budget_expense':
             const budget_expense_response = axios.get<QuadrimesterExpenseProps>(
-                BASE_URL + 'budget_expense',
+                BASE_URL + '/budget_expense',
                 {
                     params: {
                         city: city,
@@ -142,9 +142,9 @@ export const getBudgetExpenseService = ({
     cities: string[]
     months: string[]
     उपशीर्षक: string[]
-}): Promise<AxiosResponse<BudgetExpenseProps[]>> => {
-    const budget_expense_response = axios.get<BudgetExpenseProps[]>(
-        BASE_URL + 'budget_expense',
+}): Promise<AxiosResponse<BudgetData>> => {
+    const budget_expense_response = axios.get<BudgetData>(
+        BASE_URL + '/budget_expense',
         {
             params: {
                 cities,

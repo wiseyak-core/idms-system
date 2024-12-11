@@ -24,7 +24,7 @@ const QuadrimesterChart = () => {
     const cities = searchParams.getAll('cities') || ''
     const शीर्षक = searchParams.getAll('शीर्षक') || ''
 
-    const { data: chartData } = useQuery({
+    const { data: chartData, isLoading } = useQuery({
         queryKey: [cities, years, quarter, शीर्षक],
         queryFn: () =>
             getQuadrimesterExpenseService({
@@ -93,6 +93,10 @@ const QuadrimesterChart = () => {
                 style={{ zIndex: '-10 !important' }}
             />
         )
+    }
+
+    if (isLoading) {
+        return <p>Loading...</p>
     }
 
     return (
