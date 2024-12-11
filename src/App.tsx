@@ -7,7 +7,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { UserPage } from './pages/UserPage'
 
-const queryClient = new QueryClient()
+export const queryClient = new QueryClient()
 
 function App() {
     return (

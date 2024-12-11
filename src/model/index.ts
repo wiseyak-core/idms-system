@@ -1,9 +1,13 @@
-export type DatasetTableProps = {
-    id: string
-    name: string
-    url: string
-    uploadedAt: string
+export interface DatasetTableProps {
+    id?: string
+    city: string
     category: string
+    year: number | null
+    month: string
+    file_name: string
+    fileType: string
+    created: string
+    modified: string
 }
 
 export type BudgetExpensekeys = 'बजेट' | 'खर्च'
@@ -65,4 +69,11 @@ export interface BudgetExpenseProps {
     'मौज्दात जम्मा': number
     city: string
     month: string
+}
+
+export interface BudgetData {
+    filterOptions: {
+        months: string[]
+    }
+    data: BudgetExpenseProps[]
 }

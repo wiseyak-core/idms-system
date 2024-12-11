@@ -1,0 +1,9 @@
+version: '3'
+services:
+    idms-system:
+        build:
+            context: .
+        ports:
+            - '3001:3001'
+        environment:
+            VITE_BASE_URL: 'http://192.168.88.10:8000'

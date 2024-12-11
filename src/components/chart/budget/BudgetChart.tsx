@@ -39,7 +39,7 @@ const BudgetChart = () => {
     const topic = searchParams.get('topic') || ''
     const उपशीर्षक = searchParams.getAll('उपशीर्षक') || ''
 
-    const { data: chartData } = useQuery({
+    const { data: chartData, isLoading } = useQuery({
         queryKey: [topic, cities, months, उपशीर्षक],
         queryFn: () =>
             getBudgetExpenseService({
@@ -54,22 +54,25 @@ const BudgetChart = () => {
     const config =
         coreData &&
         (cities.length > 1
-            ? budgetExpenseCityTable(coreData)
-            : budgetExpenseTableMonth(coreData))
+            ? budgetExpenseCityTable(coreData.data)
+            : budgetExpenseTableMonth(coreData.data))
 
     const stackedGraphData =
-        coreData && budgetExpenseStackedChart(coreData, cities)
+        coreData && budgetExpenseStackedChart(coreData.data, cities)
 
-    const areaGraphData = coreData && budgetExpenseAreaChart(coreData, months)
+    const areaGraphData =
+        coreData && budgetExpenseAreaChart(coreData.data, months)
 
-    const lineGraphData = coreData && budgetExpenseLineChart(coreData, months)
+    const lineGraphData =
+        coreData && budgetExpenseLineChart(coreData.data, months)
 
-    const pieGraph = coreData && budgetExpensePieChart(coreData, pieState)
+    const pieGraph = coreData && budgetExpensePieChart(coreData.data, pieState)
 
-    const heatMap = coreData && budgetExpenseHeatMap(coreData)
+    const heatMap = coreData && budgetExpenseHeatMap(coreData.data)
 
     const filteredData =
-        coreData && coreData.filter((item) => item['बजेट उपशीर्षक नाम'] !== '')
+        coreData &&
+        coreData.data.filter((item) => item['बजेट उपशीर्षक नाम'] !== '')
 
     const sortedData = filteredData && budgetSortData(filteredData, sort)
 
@@ -137,6 +140,10 @@ const BudgetChart = () => {
                 export
             />
         )
+    }
+
+    if (isLoading) {
+        return <p>Loading...</p>
     }
 
     return (
@@ -286,8 +293,8 @@ const BudgetChart = () => {
             )}
             {!displayDataGrid && coreData && उपशीर्षक.includes('all') && (
                 <>
-                    <WardWiseBudgetChart coreData={coreData} />
-                    <SectorWiseBudgetChart coreData={coreData} />
+                    <WardWiseBudgetChart coreData={coreData.data} />
+                    <SectorWiseBudgetChart coreData={coreData.data} />
                 </>
             )}
             {displayDataGrid && (
