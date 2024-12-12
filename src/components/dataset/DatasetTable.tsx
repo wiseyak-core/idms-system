@@ -79,7 +79,7 @@ const columns = [
             })
             return (
                 <DeleteButton
-                    endpoint={`${BASE_URL}/api/dataset?${searchParams.toString()}`}
+                    endpoint={`${BASE_URL}/dataset?${searchParams.toString()}`}
                     queryKey="dataset"
                 />
             )
@@ -92,7 +92,7 @@ export const DatasetTable = ({ activeTab }: { activeTab: string }) => {
     const { data: apiData, isLoading } = useQuery<DatasetTableProps[]>({
         queryKey: ['dataset'],
         queryFn: async () => {
-            return (await axios.get(BASE_URL + '/api/dataset')).data
+            return (await axios.get(BASE_URL + '/dataset')).data
         },
     })
 

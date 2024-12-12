@@ -68,7 +68,7 @@ const UploadDataSetModal = () => {
             const formData = new FormData()
             formData.append('file', data.file)
 
-            return axios.post(BASE_URL + '/api/dataset', formData, {
+            return axios.post(BASE_URL + '/dataset', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
