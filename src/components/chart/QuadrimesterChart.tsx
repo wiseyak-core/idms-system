@@ -3,6 +3,7 @@ import { getQuadrimesterExpenseService } from '@/services/charts.service'
 import {
     quadrimesterExpenseAreaChart,
     quadrimesterExpenseBarChart,
+    quadrimesterExpenseLineChart,
     quadrimesterExpensePieChart,
     quarterlyBudgetAnalysis,
 } from '@/utils/quadrimesterHighChartConverter'
@@ -17,8 +18,7 @@ import { useSearchParams } from 'react-router-dom'
 const QuadrimesterChart = () => {
     const [searchParams] = useSearchParams()
     const [analysisType, setAnalysisType] = useState('budget')
-
-    const chart = 'Area'
+    const [chartType, setChartType] = useState('Area')
 
     const [sort, setSort] = useState()
     const quarter = searchParams.getAll('quarter') || ''
@@ -51,6 +51,10 @@ const QuadrimesterChart = () => {
         filteredData &&
         quadrimesterExpenseAreaChart(filteredData, years, quarter)
 
+    const lineGraphData =
+        filteredData &&
+        quadrimesterExpenseLineChart(filteredData, years, quarter)
+
     const sortedData = filteredData && quadrimesterSortData(filteredData, sort)
 
     const structuredData = sortedData && quadrimesterExpenseBarChart(sortedData)
@@ -65,15 +69,24 @@ const QuadrimesterChart = () => {
         { value: 'expense', label: 'Expense Analysis' },
     ]
 
+    const chartTypeOptions = [
+        { value: 'Area', label: 'Area Chart' },
+        { value: 'Line', label: 'Line Chart' },
+    ]
+
     const multipleGraphRender = (years: string[], cities: string[]) => {
-        if (years.length > 1 && !शीर्षक.includes('all')) {
+        if (
+            (years.length > 1 || quarter.length > 1) &&
+            !शीर्षक.includes('all')
+        ) {
             return (
                 <HighchartsReact
                     id="chart"
                     highcharts={Highcharts}
                     options={
-                        chart === 'Area' ? areaGraphData || {} : {}
-                        // : lineGraphData || {}
+                        chartType === 'Area'
+                            ? areaGraphData || {}
+                            : lineGraphData || {}
                     }
                     immutable={true}
                     export
@@ -85,7 +98,6 @@ const QuadrimesterChart = () => {
                 <HighchartsReact
                     id="chart"
                     highcharts={Highcharts}
-                    // options={stackedGraphData || {}}
                     options={{}}
                     immutable={true}
                     export
@@ -132,28 +144,53 @@ const QuadrimesterChart = () => {
                     },
                 }}
             >
-                <Flex align="center" justify="space-between">
-                    <Flex vertical>
-                        <h3>Select Sort:</h3>
-                        <Select
-                            value={sort}
-                            onChange={(value) => {
-                                setSort(value)
-                            }}
-                            popupClassName="capitalizeWords"
-                            rootClassName="capitalizeWords"
-                            size="middle"
-                            showSearch
-                            style={{ width: 200 }}
-                            placeholder="Select sort"
-                            filterOption={(input, option) =>
-                                (option?.label ?? '')
-                                    .toLowerCase()
-                                    .includes(input.toLowerCase())
-                            }
-                            options={sortOptions}
-                        />
-                    </Flex>
+                <Flex align="center" justify="flex-end" gap={8}>
+                    {years.length <= 1 && quarter.length <= 1 && (
+                        <Flex vertical>
+                            <h3>Select Sort:</h3>
+                            <Select
+                                value={sort}
+                                onChange={(value) => {
+                                    setSort(value)
+                                }}
+                                popupClassName="capitalizeWords"
+                                rootClassName="capitalizeWords"
+                                size="middle"
+                                showSearch
+                                style={{ width: 200 }}
+                                placeholder="Select sort"
+                                filterOption={(input, option) =>
+                                    (option?.label ?? '')
+                                        .toLowerCase()
+                                        .includes(input.toLowerCase())
+                                }
+                                options={sortOptions}
+                            />
+                        </Flex>
+                    )}
+                    {(years.length > 1 || quarter.length > 1) && (
+                        <Flex vertical>
+                            <h3>Select Chart Type:</h3>
+                            <Select
+                                value={chartType}
+                                onChange={(value) => {
+                                    setChartType(value)
+                                }}
+                                popupClassName="capitalizeWords"
+                                rootClassName="capitalizeWords"
+                                size="middle"
+                                showSearch
+                                style={{ width: 200 }}
+                                placeholder="Select chart"
+                                filterOption={(input, option) =>
+                                    (option?.label ?? '')
+                                        .toLowerCase()
+                                        .includes(input.toLowerCase())
+                                }
+                                options={chartTypeOptions}
+                            />
+                        </Flex>
+                    )}
                 </Flex>
                 <Flex vertical>{multipleGraphRender(years, cities)}</Flex>
             </Card>

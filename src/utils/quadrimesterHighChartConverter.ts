@@ -206,6 +206,8 @@ export const quadrimesterExpenseAreaChart = (
     quarter?: string[],
     years?: string[]
 ) => {
+    const category = quarter && quarter?.length > 1 ? quarter : years
+
     const highChartOptions: Highcharts.Options = {
         chart: {
             type: 'area',
@@ -214,7 +216,7 @@ export const quadrimesterExpenseAreaChart = (
             text: 'बजेट / खर्च',
         },
         xAxis: {
-            categories: quarter || years || [],
+            categories: category || [],
         },
         yAxis: {
             labels: {
@@ -245,6 +247,77 @@ export const quadrimesterExpenseAreaChart = (
                 type: 'area',
             },
         ],
+    }
+    return highChartOptions
+}
+
+export const quadrimesterExpenseLineChart = (
+    data: QuadrimesterExpenseType[],
+    quarter?: string[],
+    years?: string[]
+) => {
+    const highChartOptions: Highcharts.Options = {
+        chart: {
+            type: 'line', // Changed from 'area' to 'line'
+        },
+        title: {
+            text: 'बजेट / खर्च',
+        },
+        xAxis: {
+            categories: quarter || years || [],
+        },
+        yAxis: {
+            labels: {
+                formatter: function () {
+                    return 'Rs ' + convertToNepaliCurrency(this.value as number)
+                },
+            },
+        },
+        series: [
+            {
+                name: 'चौमासिक खर्च',
+                data: data.map(
+                    (item) =>
+                        item['प्रथम चौमासिक खर्च'] ||
+                        item['दोश्रो चौमासिक खर्च'] ||
+                        item['तेस्रो चौमासिक खर्च']
+                ),
+                type: 'line', // Changed from 'area' to 'line'
+                marker: {
+                    enabled: true, // Enables data points markers
+                },
+            },
+            {
+                name: 'चौमासिक बजेट',
+                data: data.map(
+                    (item) =>
+                        item['प्रथम चौमासिक बजेट'] ||
+                        item['दोश्रो चौमासिक	बजेट'] ||
+                        item['तेस्रो चौमासिक	बजेट']
+                ),
+                type: 'line', // Changed from 'area' to 'line'
+                marker: {
+                    enabled: true, // Enables data points markers
+                },
+            },
+        ],
+        // Optional: You can add these additional styling options
+        plotOptions: {
+            line: {
+                lineWidth: 2,
+                states: {
+                    hover: {
+                        lineWidth: 3,
+                    },
+                },
+            },
+        },
+        tooltip: {
+            formatter: function () {
+                return `<b>${this.series.name}</b><br/>
+                        ${this.x}: Rs ${convertToNepaliCurrency(this.y as number)}`
+            },
+        },
     }
     return highChartOptions
 }
