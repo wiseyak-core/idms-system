@@ -77,7 +77,7 @@ export const getQuadrimesterExpenseService = ({
     शीर्षक: string[]
 }): Promise<AxiosResponse<QuadrimesterExpenseType[]>> => {
     const quadrimester_expense_response = axios.get<QuadrimesterExpenseType[]>(
-        BASE_URL + '/quadrimester_expense/qe',
+        BASE_URL + '/quadrimester_expense',
         {
             params: {
                 cities,

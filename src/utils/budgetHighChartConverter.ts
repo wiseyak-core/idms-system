@@ -438,6 +438,9 @@ export const budgetExpenseAreaChart = (
         chart: {
             type: 'area',
         },
+        title: {
+            text: 'बजेट / खर्च',
+        },
         xAxis: {
             categories: months,
         },
@@ -491,6 +494,9 @@ export const budgetExpenseLineChart = (
     const highChartOptions: Highcharts.Options = {
         xAxis: {
             categories: months,
+        },
+        title: {
+            text: 'बजेट / खर्च',
         },
         yAxis: {
             labels: {
@@ -845,14 +851,14 @@ export const sectorWiseBudget = (
             },
         ],
         colors: [
-            '#2563eb', // प्रशासनिक
-            '#16a34a', // शिक्षा
-            '#dc2626', // स्वास्थ्य
-            '#ea580c', // कृषि
-            '#7c3aed', // सामाजिक
-            '#0891b2', // वडा
-            '#be185d', // विशेष
-            '#854d0e', // वातावरण
+            '#2563eb',
+            '#16a34a',
+            '#dc2626',
+            '#ea580c',
+            '#7c3aed',
+            '#0891b2',
+            '#be185d',
+            '#854d0e',
         ],
     }
 
