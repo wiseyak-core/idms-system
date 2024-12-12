@@ -4,6 +4,7 @@ import {
     quadrimesterExpenseAreaChart,
     quadrimesterExpenseBarChart,
     quadrimesterExpensePieChart,
+    quarterlyBudgetAnalysis,
 } from '@/utils/quadrimesterHighChartConverter'
 import { quadrimesterSortData } from '@/utils/quadrimesterSortData'
 import { Card, Flex, Select } from 'antd'
@@ -15,6 +16,7 @@ import { useSearchParams } from 'react-router-dom'
 
 const QuadrimesterChart = () => {
     const [searchParams] = useSearchParams()
+    const [analysisType, setAnalysisType] = useState('budget')
 
     const chart = 'Area'
 
@@ -37,8 +39,11 @@ const QuadrimesterChart = () => {
 
     const coreData = chartData && chartData.data
 
+    const sectorWiseData =
+        coreData && quarterlyBudgetAnalysis(coreData, quarter[0], analysisType)
+
     const filteredData =
-        coreData && coreData.filter((item: any) => item['शीर्षक'] !== '')
+        coreData && coreData?.filter((item: any) => item['शीर्षक'] !== '')
 
     const pieData = filteredData && quadrimesterExpensePieChart(filteredData)
 
@@ -54,6 +59,11 @@ const QuadrimesterChart = () => {
         value: item,
         label: item,
     }))
+
+    const analysisOptions = [
+        { value: 'budget', label: 'Budget Analysis' },
+        { value: 'expense', label: 'Expense Analysis' },
+    ]
 
     const multipleGraphRender = (years: string[], cities: string[]) => {
         if (years.length > 1 && !शीर्षक.includes('all')) {
@@ -100,57 +110,63 @@ const QuadrimesterChart = () => {
     }
 
     return (
-        <Card
-            title="Charts"
+        <Flex
             style={{
                 overflowY: 'auto',
                 width: '100%',
                 display: 'flex',
                 height: '100%',
+                maxHeight: '100vh',
+                gap: 8,
                 flexDirection: 'column',
-            }}
-            styles={{
-                body: {
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: '100%',
-                    width: '100%',
-                    maxHeight: '100vh',
-                    overflowY: 'auto',
-                },
-                header: {
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                    zIndex: '50',
-                },
+                marginBottom: 20,
             }}
         >
-            <Flex align="center" justify="space-between">
-                <Flex vertical>
-                    <h3>Select Sort:</h3>
-                    <Select
-                        value={sort}
-                        onChange={(value) => {
-                            setSort(value)
-                        }}
-                        popupClassName="capitalizeWords"
-                        rootClassName="capitalizeWords"
-                        size="middle"
-                        showSearch
-                        style={{ width: 200 }}
-                        placeholder="Select sort"
-                        filterOption={(input, option) =>
-                            (option?.label ?? '')
-                                .toLowerCase()
-                                .includes(input.toLowerCase())
-                        }
-                        options={sortOptions}
-                    />
+            <Card
+                title="Basic Charts"
+                styles={{
+                    body: {
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 8,
+                    },
+                }}
+            >
+                <Flex align="center" justify="space-between">
+                    <Flex vertical>
+                        <h3>Select Sort:</h3>
+                        <Select
+                            value={sort}
+                            onChange={(value) => {
+                                setSort(value)
+                            }}
+                            popupClassName="capitalizeWords"
+                            rootClassName="capitalizeWords"
+                            size="middle"
+                            showSearch
+                            style={{ width: 200 }}
+                            placeholder="Select sort"
+                            filterOption={(input, option) =>
+                                (option?.label ?? '')
+                                    .toLowerCase()
+                                    .includes(input.toLowerCase())
+                            }
+                            options={sortOptions}
+                        />
+                    </Flex>
                 </Flex>
-            </Flex>
-            <Flex vertical>
-                {multipleGraphRender(years, cities)}
+                <Flex vertical>{multipleGraphRender(years, cities)}</Flex>
+            </Card>
+            <Card
+                title="Pie Charts"
+                styles={{
+                    body: {
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 8,
+                    },
+                }}
+            >
                 <HighchartsReact
                     id="chart"
                     highcharts={Highcharts}
@@ -158,8 +174,37 @@ const QuadrimesterChart = () => {
                     options={pieData || {}}
                     export
                 />
-            </Flex>
-        </Card>
+            </Card>
+            {शीर्षक[0] === 'all' && (
+                <Card
+                    title="Sector Wise Charts"
+                    extra={
+                        <Select
+                            value={analysisType}
+                            onChange={(value) => setAnalysisType(value)}
+                            options={analysisOptions}
+                            style={{ width: 200 }}
+                            placeholder="Select Analysis Type"
+                        />
+                    }
+                    styles={{
+                        body: {
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 8,
+                        },
+                    }}
+                >
+                    <HighchartsReact
+                        id="chart"
+                        highcharts={Highcharts}
+                        immutable={true}
+                        options={sectorWiseData || {}}
+                        export
+                    />
+                </Card>
+            )}
+        </Flex>
     )
 }
 

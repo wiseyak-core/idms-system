@@ -4,7 +4,6 @@ import {
     budgetExpenseAreaChart,
     budgetExpenseBarChart,
     budgetExpenseCityTable,
-    budgetExpenseHeatMap,
     budgetExpenseLineChart,
     budgetExpensePieChart,
     budgetExpenseStackedChart,
@@ -67,8 +66,6 @@ const BudgetChart = () => {
         coreData && budgetExpenseLineChart(coreData.data, months)
 
     const pieGraph = coreData && budgetExpensePieChart(coreData.data, pieState)
-
-    const heatMap = coreData && budgetExpenseHeatMap(coreData.data)
 
     const filteredData =
         coreData &&
@@ -148,7 +145,6 @@ const BudgetChart = () => {
 
     return (
         <Flex
-            title="Charts"
             style={{
                 overflowY: 'auto',
                 width: '100%',
@@ -240,24 +236,7 @@ const BudgetChart = () => {
                     }}
                     gutter={8}
                 >
-                    <Col xs={24} md={24} lg={14}>
-                        <Card
-                            title="Heat Map"
-                            style={{
-                                height: '100%',
-                            }}
-                        >
-                            <HighchartsReact
-                                id="chart"
-                                highcharts={Highcharts}
-                                options={heatMap || {}}
-                                immutable={true}
-                                style={{ width: '70%' }}
-                                export
-                            />
-                        </Card>
-                    </Col>
-                    <Col xs={24} md={24} lg={10}>
+                    <Col sm={24}>
                         <Card title="Pie Chart">
                             <Flex vertical gap={8}>
                                 <h3>Select expense/budget: </h3>

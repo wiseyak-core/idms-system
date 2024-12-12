@@ -130,8 +130,7 @@ export const QuadrimesterFilter = () => {
         <Card
             title="Select Filters"
             style={{
-                minWidth: '300px',
-                maxWidth: '300px',
+                maxWidth: '100%',
                 flex: '1',
             }}
         >
