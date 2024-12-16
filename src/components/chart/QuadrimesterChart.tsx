@@ -3,22 +3,28 @@ import { getQuadrimesterExpenseService } from '@/services/charts.service'
 import {
     quadrimesterExpenseAreaChart,
     quadrimesterExpenseBarChart,
+    quadrimesterExpenseCityTable,
+    quadrimesterExpenseLineChart,
     quadrimesterExpensePieChart,
+    quadrimesterExpenseQuarterlyTable,
+    quadrimesterYearTable,
     quarterlyBudgetAnalysis,
 } from '@/utils/quadrimesterHighChartConverter'
 import { quadrimesterSortData } from '@/utils/quadrimesterSortData'
 import { Card, Flex, Select } from 'antd'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { useSearchParams } from 'react-router-dom'
+import DataGrid from '@/components/DataGrid'
+import useActiveFilters from '@/hooks/useActiveFilter'
 
 const QuadrimesterChart = () => {
     const [searchParams] = useSearchParams()
+    const { setActiveFilters } = useActiveFilters()
     const [analysisType, setAnalysisType] = useState('budget')
-
-    const chart = 'Area'
+    const [chartType, setChartType] = useState('Area')
 
     const [sort, setSort] = useState()
     const quarter = searchParams.getAll('quarter') || ''
@@ -37,7 +43,29 @@ const QuadrimesterChart = () => {
             }),
     })
 
-    const coreData = chartData && chartData.data
+    useEffect(() => {
+        if (chartData) {
+            setActiveFilters(chartData.data.filterOptions.years)
+        }
+    }, [chartData])
+
+    const displayDataGrid =
+        शीर्षक.includes('all') &&
+        (years.length > 1 || cities.length > 1 || quarter.length > 1)
+
+    const coreData = chartData && chartData.data.data
+
+    const config = () => {
+        if (coreData) {
+            if (quarter.length > 1) {
+                return quadrimesterExpenseQuarterlyTable(coreData, quarter)
+            } else if (cities.length > 1) {
+                return quadrimesterExpenseCityTable(coreData, cities)
+            } else {
+                return quadrimesterYearTable(coreData, years)
+            }
+        }
+    }
 
     const sectorWiseData =
         coreData && quarterlyBudgetAnalysis(coreData, quarter[0], analysisType)
@@ -50,6 +78,10 @@ const QuadrimesterChart = () => {
     const areaGraphData =
         filteredData &&
         quadrimesterExpenseAreaChart(filteredData, years, quarter)
+
+    const lineGraphData =
+        filteredData &&
+        quadrimesterExpenseLineChart(filteredData, years, quarter)
 
     const sortedData = filteredData && quadrimesterSortData(filteredData, sort)
 
@@ -65,15 +97,24 @@ const QuadrimesterChart = () => {
         { value: 'expense', label: 'Expense Analysis' },
     ]
 
+    const chartTypeOptions = [
+        { value: 'Area', label: 'Area Chart' },
+        { value: 'Line', label: 'Line Chart' },
+    ]
+
     const multipleGraphRender = (years: string[], cities: string[]) => {
-        if (years.length > 1 && !शीर्षक.includes('all')) {
+        if (
+            (years.length > 1 || quarter.length > 1) &&
+            !शीर्षक.includes('all')
+        ) {
             return (
                 <HighchartsReact
                     id="chart"
                     highcharts={Highcharts}
                     options={
-                        chart === 'Area' ? areaGraphData || {} : {}
-                        // : lineGraphData || {}
+                        chartType === 'Area'
+                            ? areaGraphData || {}
+                            : lineGraphData || {}
                     }
                     immutable={true}
                     export
@@ -85,7 +126,6 @@ const QuadrimesterChart = () => {
                 <HighchartsReact
                     id="chart"
                     highcharts={Highcharts}
-                    // options={stackedGraphData || {}}
                     options={{}}
                     immutable={true}
                     export
@@ -122,60 +162,89 @@ const QuadrimesterChart = () => {
                 marginBottom: 20,
             }}
         >
-            <Card
-                title="Basic Charts"
-                styles={{
-                    body: {
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 8,
-                    },
-                }}
-            >
-                <Flex align="center" justify="space-between">
-                    <Flex vertical>
-                        <h3>Select Sort:</h3>
-                        <Select
-                            value={sort}
-                            onChange={(value) => {
-                                setSort(value)
-                            }}
-                            popupClassName="capitalizeWords"
-                            rootClassName="capitalizeWords"
-                            size="middle"
-                            showSearch
-                            style={{ width: 200 }}
-                            placeholder="Select sort"
-                            filterOption={(input, option) =>
-                                (option?.label ?? '')
-                                    .toLowerCase()
-                                    .includes(input.toLowerCase())
-                            }
-                            options={sortOptions}
-                        />
+            {!displayDataGrid && (
+                <Card
+                    title="Basic Charts"
+                    styles={{
+                        body: {
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 8,
+                        },
+                    }}
+                >
+                    <Flex align="center" justify="flex-end" gap={8}>
+                        {years.length <= 1 && quarter.length <= 1 && (
+                            <Flex vertical>
+                                <h3>Select Sort:</h3>
+                                <Select
+                                    value={sort}
+                                    onChange={(value) => {
+                                        setSort(value)
+                                    }}
+                                    popupClassName="capitalizeWords"
+                                    rootClassName="capitalizeWords"
+                                    size="middle"
+                                    showSearch
+                                    style={{ width: 200 }}
+                                    placeholder="Select sort"
+                                    filterOption={(input, option) =>
+                                        (option?.label ?? '')
+                                            .toLowerCase()
+                                            .includes(input.toLowerCase())
+                                    }
+                                    options={sortOptions}
+                                />
+                            </Flex>
+                        )}
+                        {(years.length > 1 || quarter.length > 1) && (
+                            <Flex vertical>
+                                <h3>Select Chart Type:</h3>
+                                <Select
+                                    value={chartType}
+                                    onChange={(value) => {
+                                        setChartType(value)
+                                    }}
+                                    popupClassName="capitalizeWords"
+                                    rootClassName="capitalizeWords"
+                                    size="middle"
+                                    showSearch
+                                    style={{ width: 200 }}
+                                    placeholder="Select chart"
+                                    filterOption={(input, option) =>
+                                        (option?.label ?? '')
+                                            .toLowerCase()
+                                            .includes(input.toLowerCase())
+                                    }
+                                    options={chartTypeOptions}
+                                />
+                            </Flex>
+                        )}
                     </Flex>
-                </Flex>
-                <Flex vertical>{multipleGraphRender(years, cities)}</Flex>
-            </Card>
-            <Card
-                title="Pie Charts"
-                styles={{
-                    body: {
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 8,
-                    },
-                }}
-            >
-                <HighchartsReact
-                    id="chart"
-                    highcharts={Highcharts}
-                    immutable={true}
-                    options={pieData || {}}
-                    export
-                />
-            </Card>
-            {शीर्षक[0] === 'all' && (
+                    <Flex vertical>{multipleGraphRender(years, cities)}</Flex>
+                </Card>
+            )}
+            {!displayDataGrid && (
+                <Card
+                    title="Pie Charts"
+                    styles={{
+                        body: {
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 8,
+                        },
+                    }}
+                >
+                    <HighchartsReact
+                        id="chart"
+                        highcharts={Highcharts}
+                        immutable={true}
+                        options={pieData || {}}
+                        export
+                    />
+                </Card>
+            )}
+            {!displayDataGrid && शीर्षक[0] === 'all' && (
                 <Card
                     title="Sector Wise Charts"
                     extra={
@@ -202,6 +271,11 @@ const QuadrimesterChart = () => {
                         options={sectorWiseData || {}}
                         export
                     />
+                </Card>
+            )}
+            {displayDataGrid && (
+                <Card title={`Comparision`}>
+                    <DataGrid config={config() || {}} />
                 </Card>
             )}
         </Flex>

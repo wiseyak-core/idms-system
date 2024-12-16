@@ -11,8 +11,6 @@ const ChartSection = () => {
             return <QuadrimesterChart />
         case 'budget_expense':
             return <BudgetChart />
-        case 'local_activities':
-            return <QuadrimesterChart />
         default:
             return <QuadrimesterChart />
     }

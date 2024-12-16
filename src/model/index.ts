@@ -30,6 +30,13 @@ export interface Data {
     data: QuadrimesterExpenseType[]
 }
 
+export interface QuadrimesterExpenseData {
+    filterOptions: {
+        years: string[]
+    }
+    data: QuadrimesterExpenseType[]
+}
+
 export interface QuadrimesterExpenseType {
     'क्र.सं.': string
     'खर्च शीर्षक संकेत': string

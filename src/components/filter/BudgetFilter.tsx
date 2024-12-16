@@ -13,11 +13,14 @@ import { useEffect } from 'react'
 import { MONTHS, SUBTITLE } from '@/constant'
 import GuideSection from '../GuideSection'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
+import useActiveOptions from '@/hooks/useActiveFilter'
 
 export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
     const matches = useMediaQuery('(min-width: 1024px)')
 
     const [searchParams, setSearchParams] = useSearchParams()
+
+    const { activeFilters } = useActiveOptions()
 
     const { setTopic, topic } = useTopicSelect()
 
@@ -41,7 +44,7 @@ export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
         value: city,
     }))
 
-    const monthOptions = MONTHS.map((month) => ({
+    const monthOptions = activeFilters.map((month) => ({
         label: month,
         value: month,
     }))
