@@ -1,6 +1,7 @@
 import { BUDGET_SORT } from '@/constant'
 import { getQuadrimesterExpenseService } from '@/services/charts.service'
 import {
+    quadrimesterBudgetExpenseChartMultipleCity,
     quadrimesterExpenseAreaChart,
     quadrimesterExpenseBarChart,
     quadrimesterExpenseCityTable,
@@ -19,6 +20,11 @@ import { useQuery } from 'react-query'
 import { useSearchParams } from 'react-router-dom'
 import DataGrid from '@/components/DataGrid'
 import useActiveFilters from '@/hooks/useActiveFilter'
+import HC_exporting from 'highcharts/modules/exporting'
+import HighchartsOfflineExporting from 'highcharts/modules/offline-exporting'
+
+HC_exporting(Highcharts)
+HighchartsOfflineExporting(Highcharts)
 
 const QuadrimesterChart = () => {
     const [searchParams] = useSearchParams()
@@ -45,7 +51,8 @@ const QuadrimesterChart = () => {
 
     useEffect(() => {
         if (chartData) {
-            setActiveFilters(chartData.data.filterOptions.years)
+            console.log(chartData)
+            setActiveFilters(chartData.data.filterOptions.year)
         }
     }, [chartData])
 
@@ -66,6 +73,9 @@ const QuadrimesterChart = () => {
             }
         }
     }
+
+    const multipleCitiesGraph =
+        coreData && quadrimesterBudgetExpenseChartMultipleCity(coreData, cities)
 
     const sectorWiseData =
         coreData && quarterlyBudgetAnalysis(coreData, quarter[0], analysisType)
@@ -126,7 +136,7 @@ const QuadrimesterChart = () => {
                 <HighchartsReact
                     id="chart"
                     highcharts={Highcharts}
-                    options={{}}
+                    options={multipleCitiesGraph || {}}
                     immutable={true}
                     export
                     style={{ zIndex: '-10 !important' }}

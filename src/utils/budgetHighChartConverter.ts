@@ -38,6 +38,7 @@ export const budgetExpenseBarChart = (data: BudgetExpenseProps[]) => {
             data: data.map((item) => item['खर्च जम्मा']),
             color: colorPalette.total[0],
             grouping: true,
+            visible: false,
         },
         {
             name: 'बजेट जम्मा',
@@ -45,6 +46,7 @@ export const budgetExpenseBarChart = (data: BudgetExpenseProps[]) => {
             data: data.map((item) => item['बजेट जम्मा']),
             color: colorPalette.total[1],
             grouping: true,
+            visible: false,
         },
         {
             name: 'खर्च पूंजीगत',
@@ -52,6 +54,7 @@ export const budgetExpenseBarChart = (data: BudgetExpenseProps[]) => {
             data: data.map((item) => item['खर्च पूंजीगत']),
             color: colorPalette.capital[0],
             grouping: true,
+            visible: false,
         },
         {
             name: 'बजेट पूंजीगत',
@@ -59,6 +62,7 @@ export const budgetExpenseBarChart = (data: BudgetExpenseProps[]) => {
             data: data.map((item) => item['बजेट पूंजीगत']),
             color: colorPalette.capital[1],
             grouping: true,
+            visible: false,
         },
     ]
 
@@ -99,14 +103,7 @@ export const budgetExpenseBarChart = (data: BudgetExpenseProps[]) => {
         credits: {
             enabled: false,
         },
-        exporting: {
-            enabled: true,
-            buttons: {
-                contextButton: {
-                    menuItems: ['downloadPNG', 'downloadPDF', 'downloadCSV'],
-                },
-            },
-        },
+
         xAxis: {
             categories: categories,
             startOnTick: false,
@@ -318,14 +315,6 @@ export const budgetExpensePieChart = (
         credits: {
             enabled: false,
         },
-        exporting: {
-            buttons: {
-                contextButton: {
-                    menuItems: ['downloadPNG', 'downloadPDF', 'downloadCSV'],
-                },
-            },
-            filename: `${selectedKey}_विवरण_${new Date().toLocaleDateString('ne-NP')}`,
-        },
         series: [
             {
                 type: 'pie',
@@ -372,60 +361,123 @@ export const budgetExpenseStackedChart = (
 ) => {
     const highChartOptions: Highcharts.Options = {
         chart: {
-            type: 'column',
+            type: 'bar',
             height: 500,
+            marginRight: 100,
         },
         title: {
             text: 'बजेट / खर्च',
         },
         xAxis: {
             categories: cities || [],
+            labels: {
+                style: {
+                    fontSize: '12px',
+                },
+            },
         },
-
         yAxis: {
             title: {
                 text: 'रुपैयाँ',
             },
-        },
-
-        plotOptions: {
-            column: {
-                stacking: 'normal',
+            labels: {
+                formatter: function () {
+                    return 'रु ' + convertToNepaliCurrency(this.value as number)
+                },
+                style: {
+                    fontSize: '12px',
+                },
             },
         },
-
+        plotOptions: {
+            bar: {
+                grouping: true, // Enable grouping
+                groupPadding: 0.1,
+                pointPadding: 0.05,
+                borderWidth: 0,
+            },
+        },
+        legend: {
+            align: 'right',
+            verticalAlign: 'top',
+            layout: 'vertical',
+            symbolRadius: 2,
+            itemStyle: {
+                fontSize: '12px',
+            },
+        },
+        tooltip: {
+            shared: true,
+            formatter: function () {
+                if (!this.points) return ''
+                let s = `<b>${this.x}</b><br/>`
+                this.points.forEach((point) => {
+                    s += `${point.series.name}: रु ${convertToNepaliCurrency(point.y || 0)}<br/>`
+                })
+                return s
+            },
+        },
         series: [
             {
                 name: 'बजेट चालु',
                 data: data.map((item) => item['बजेट चालु']) || [],
-                type: 'column',
+                type: 'bar',
+                color: '#2ecc71',
             },
             {
                 name: 'खर्च चालु',
                 data: data.map((item) => item['खर्च चालु']) || [],
-                type: 'column',
+                type: 'bar',
+                color: '#27ae60',
             },
             {
                 name: 'बजेट पूंजीगत',
                 data: data.map((item) => item['बजेट पूंजीगत']) || [],
-                type: 'column',
+                type: 'bar',
+                color: '#3498db',
+                visible: false,
             },
             {
                 name: 'खर्च पूंजीगत',
                 data: data.map((item) => item['खर्च पूंजीगत']) || [],
-                type: 'column',
+                type: 'bar',
+                color: '#2980b9',
+                visible: false,
             },
             {
                 name: 'बजेट जम्मा',
                 data: data.map((item) => item['बजेट जम्मा']) || [],
-                type: 'column',
+                type: 'bar',
+                color: '#e74c3c',
+                visible: false,
             },
             {
                 name: 'खर्च जम्मा',
                 data: data.map((item) => item['खर्च जम्मा']) || [],
-                type: 'column',
+                type: 'bar',
+                color: '#c0392b',
+                visible: false,
             },
         ],
+        credits: {
+            enabled: false,
+        },
+        responsive: {
+            rules: [
+                {
+                    condition: {
+                        maxWidth: 500,
+                    },
+                    chartOptions: {
+                        legend: {
+                            align: 'center',
+                            verticalAlign: 'bottom',
+                            layout: 'horizontal',
+                        },
+                    },
+                },
+            ],
+        },
     }
     return highChartOptions
 }
@@ -624,38 +676,22 @@ export const wardWiseBudget = (data: BudgetExpenseProps[]) => {
             )
         ),
     ].filter(Boolean)
-    const wardData = wards.map((city) => {
-        const cityItems = data.filter((item) =>
-            item['बजेट उपशीर्षक नाम'].includes('लेकवेशी नगरपालिकावडा नं.')
-        )
+
+    const wardData = wards.map((ward) => {
+        // Find the specific item for this ward
+        const wardItem = data.find((item) => item['बजेट उपशीर्षक नाम'] === ward)
+
         return {
-            city,
-            'बजेट चालु': cityItems.reduce(
-                (sum, item) => sum + item['बजेट चालु'],
-                0
-            ),
-            'बजेट पूंजीगत': cityItems.reduce(
-                (sum, item) => sum + item['बजेट पूंजीगत'],
-                0
-            ),
-            'बजेट जम्मा': cityItems.reduce(
-                (sum, item) => sum + item['बजेट जम्मा'],
-                0
-            ),
-            'खर्च चालु': cityItems.reduce(
-                (sum, item) => sum + item['खर्च चालु'],
-                0
-            ),
-            'खर्च पूंजीगत': cityItems.reduce(
-                (sum, item) => sum + item['खर्च पूंजीगत'],
-                0
-            ),
-            'खर्च जम्मा': cityItems.reduce(
-                (sum, item) => sum + item['खर्च जम्मा'],
-                0
-            ),
+            ward,
+            'बजेट चालु': wardItem?.['बजेट चालु'] || 0,
+            'बजेट पूंजीगत': wardItem?.['बजेट पूंजीगत'] || 0,
+            'बजेट जम्मा': wardItem?.['बजेट जम्मा'] || 0,
+            'खर्च चालु': wardItem?.['खर्च चालु'] || 0,
+            'खर्च पूंजीगत': wardItem?.['खर्च पूंजीगत'] || 0,
+            'खर्च जम्मा': wardItem?.['खर्च जम्मा'] || 0,
         }
     })
+
     const highChartOptions: Highcharts.Options = {
         chart: {
             type: 'column',
@@ -708,97 +744,24 @@ export const wardWiseBudget = (data: BudgetExpenseProps[]) => {
                 data: wardData.map((item) => item['खर्च पूंजीगत']),
                 type: 'column',
             },
-            {
-                name: 'बजेट जम्मा',
-                data: wardData.map((item) => item['बजेट जम्मा']),
-                type: 'column',
-            },
-            {
-                name: 'खर्च जम्मा',
-                data: wardData.map((item) => item['खर्च जम्मा']),
-                type: 'column',
-            },
         ],
     }
     return highChartOptions
 }
 
-export const sectorWiseBudget = (
-    data: BudgetExpenseProps[],
-    matches: boolean
-) => {
-    // Define sectors and their corresponding budget items
-    const sectors = [
-        {
-            name: 'प्रशासनिक तथा कार्यालय',
-            pattern: [
-                'लेकवेशी नगरपालिका$',
-                'प्रशासन शाखा',
-                'सूचना प्रविधी शाखा',
-            ],
-        },
-        {
-            name: 'शिक्षा',
-            pattern: ['शिक्षा'],
-        },
-        {
-            name: 'स्वास्थ्य',
-            pattern: ['स्वास्थ्य', 'नागरिक आरोग्य'],
-        },
-        {
-            name: 'कृषि तथा पशु विकास',
-            pattern: ['पशु सेवा', 'कृषि विकाश'],
-        },
-        {
-            name: 'सामाजिक विकास',
-            pattern: [
-                'महिला तथा बालबालिका',
-                'सहकारी',
-                'न्यायिक समिती',
-                'उद्योग तथा उपभोत्ता',
-            ],
-        },
-        {
-            name: 'वडा कार्यालयहरू',
-            pattern: ['वडा नं'],
-        },
-        {
-            name: 'विशेष कार्यक्रमहरू',
-            pattern: ['शसर्त अनुदान', 'विषेश अनुदान'],
-        },
-        {
-            name: 'वातावरण तथा विपद',
-            pattern: ['वन वातावरण तथा विपद'],
-        },
-    ]
+export const sectorWiseBudget = (data: BudgetExpenseProps[]) => {
+    const filterdData = data.filter((item) => item['क्र.सं.'] !== 'जम्मा')
+    const budgetData = filterdData.map((item) => ({
+        name: item['बजेट उपशीर्षक नाम'],
+        y: item['बजेट जम्मा'],
+        expense: item['खर्च जम्मा'],
+        percentage: (item['खर्च जम्मा'] / item['बजेट जम्मा']) * 100 || 0,
+    }))
 
-    const sectorData = sectors.map((sector) => {
-        const sectorItems = data.filter((item) =>
-            sector.pattern.some((pattern) =>
-                new RegExp(pattern).test(item['बजेट उपशीर्षक नाम'])
-            )
-        )
+    // Sort by budget amount
+    budgetData.sort((a, b) => b.y - a.y)
 
-        const totalBudget = sectorItems.reduce(
-            (sum, item) => sum + item['बजेट जम्मा'],
-            0
-        )
-        const totalExpense = sectorItems.reduce(
-            (sum, item) => sum + item['खर्च जम्मा'],
-            0
-        )
-
-        return {
-            name: sector.name,
-            y: totalBudget,
-            expense: totalExpense,
-            percentage: (totalExpense / totalBudget) * 100 || 0,
-        }
-    })
-
-    sectorData.sort((a, b) => b.y - a.y)
-
-    const totalBudget = sectorData.reduce((sum, item) => sum + item.y, 0)
+    const totalBudget = budgetData.reduce((sum, item) => sum + item.y, 0)
 
     const highChartOptions: Highcharts.Options = {
         chart: {
@@ -806,7 +769,7 @@ export const sectorWiseBudget = (
             height: 500,
         },
         title: {
-            text: 'क्षेत्रगत बजेट विश्लेषण',
+            text: 'बजेट विश्लेषण',
         },
         subtitle: {
             text:
@@ -823,8 +786,10 @@ export const sectorWiseBudget = (
                     style: {
                         fontSize: '11px',
                     },
+                    distance: 30, // Adjust label distance from pie
                 },
-                showInLegend: matches ? true : false,
+                showInLegend: false, // Remove legend
+                size: '80%', // Make pie chart larger
             },
         },
         tooltip: {
@@ -835,19 +800,11 @@ export const sectorWiseBudget = (
                 'खर्च: रु {point.expense:,.0f}<br/>' +
                 'खर्च प्रतिशत: {point.percentage:.1f}%',
         },
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            itemStyle: {
-                fontSize: '11px',
-            },
-        },
         series: [
             {
                 type: 'pie',
-                name: 'क्षेत्रगत बजेट',
-                data: sectorData,
+                name: 'बजेट',
+                data: budgetData,
             },
         ],
         colors: [

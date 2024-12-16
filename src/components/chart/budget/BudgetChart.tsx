@@ -17,13 +17,15 @@ import { useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { useSearchParams } from 'react-router-dom'
 import { BudgetExpensekeys } from '@/model'
-import HC_exporting from 'highcharts/modules/exporting'
 import WardWiseBudgetChart from './WardWiseBudgetChart'
 import SectorWiseBudgetChart from './SectorWiseBudgetChart'
 import DataGrid from '@/components/DataGrid'
 import useActiveOptions from '@/hooks/useActiveFilter'
+import HC_exporting from 'highcharts/modules/exporting'
+import HighchartsOfflineExporting from 'highcharts/modules/offline-exporting'
 
 HC_exporting(Highcharts)
+HighchartsOfflineExporting(Highcharts)
 
 const BudgetChart = () => {
     const [searchParams] = useSearchParams()

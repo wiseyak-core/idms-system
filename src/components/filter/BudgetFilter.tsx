@@ -44,10 +44,12 @@ export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
         value: city,
     }))
 
-    const monthOptions = activeFilters.map((month) => ({
-        label: month,
-        value: month,
-    }))
+    const monthOptions =
+        activeFilters &&
+        activeFilters.map((month) => ({
+            label: month,
+            value: month,
+        }))
 
     const subTitleOptions = SUBTITLE.map((subTitle) => ({
         label: subTitle,
@@ -129,31 +131,43 @@ export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
                             <Controller
                                 name="cities"
                                 control={control}
-                                render={({ field: { value, onChange } }) => (
-                                    <Select
-                                        value={value}
-                                        onChange={onChange}
-                                        popupClassName="capitalizeWords"
-                                        rootClassName="capitalizeWords"
-                                        size="middle"
-                                        mode="multiple"
-                                        showSearch
-                                        maxCount={
-                                            months &&
-                                            उपशीर्षक &&
-                                            (months?.length > 1 ||
-                                                उपशीर्षक?.length > 1)
-                                                ? 1
-                                                : undefined
-                                        }
-                                        placeholder="Select a district"
-                                        filterOption={(input, option) =>
-                                            (option?.label ?? '')
-                                                .toLowerCase()
-                                                .includes(input.toLowerCase())
-                                        }
-                                        options={citiesOptions}
-                                    />
+                                render={({
+                                    field: { value, onChange },
+                                    formState: { errors },
+                                }) => (
+                                    <>
+                                        <Select
+                                            value={value}
+                                            onChange={onChange}
+                                            popupClassName="capitalizeWords"
+                                            rootClassName="capitalizeWords"
+                                            size="middle"
+                                            mode="multiple"
+                                            showSearch
+                                            maxCount={
+                                                months &&
+                                                उपशीर्षक &&
+                                                (months?.length > 1 ||
+                                                    उपशीर्षक?.length > 1)
+                                                    ? 1
+                                                    : undefined
+                                            }
+                                            placeholder="Select a district"
+                                            filterOption={(input, option) =>
+                                                (option?.label ?? '')
+                                                    .toLowerCase()
+                                                    .includes(
+                                                        input.toLowerCase()
+                                                    )
+                                            }
+                                            options={citiesOptions}
+                                        />
+                                        {errors && errors.cities && (
+                                            <span style={{ color: 'red' }}>
+                                                {errors.cities.message}
+                                            </span>
+                                        )}
+                                    </>
                                 )}
                             />
                         </Flex>
@@ -182,31 +196,43 @@ export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
                             <Controller
                                 name="months"
                                 control={control}
-                                render={({ field: { value, onChange } }) => (
-                                    <Select
-                                        mode="multiple"
-                                        value={value}
-                                        onChange={onChange}
-                                        popupClassName="capitalizeWords"
-                                        rootClassName="capitalizeWords"
-                                        size="middle"
-                                        showSearch
-                                        maxCount={
-                                            उपशीर्षक &&
-                                            cities &&
-                                            (cities?.length > 1 ||
-                                                उपशीर्षक?.length > 1)
-                                                ? 1
-                                                : undefined
-                                        }
-                                        placeholder="Select a month"
-                                        filterOption={(input, option) =>
-                                            (option?.label ?? '')
-                                                .toLowerCase()
-                                                .includes(input.toLowerCase())
-                                        }
-                                        options={monthOptions}
-                                    />
+                                render={({
+                                    field: { value, onChange },
+                                    formState: { errors },
+                                }) => (
+                                    <>
+                                        <Select
+                                            mode="multiple"
+                                            value={value}
+                                            onChange={onChange}
+                                            popupClassName="capitalizeWords"
+                                            rootClassName="capitalizeWords"
+                                            size="middle"
+                                            showSearch
+                                            maxCount={
+                                                उपशीर्षक &&
+                                                cities &&
+                                                (cities?.length > 1 ||
+                                                    उपशीर्षक?.length > 1)
+                                                    ? 1
+                                                    : undefined
+                                            }
+                                            placeholder="Select a month"
+                                            filterOption={(input, option) =>
+                                                (option?.label ?? '')
+                                                    .toLowerCase()
+                                                    .includes(
+                                                        input.toLowerCase()
+                                                    )
+                                            }
+                                            options={monthOptions}
+                                        />
+                                        {errors && errors.months && (
+                                            <span style={{ color: 'red' }}>
+                                                {errors.months.message}
+                                            </span>
+                                        )}
+                                    </>
                                 )}
                             />
                         </Flex>
@@ -215,7 +241,10 @@ export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
                             <Controller
                                 name={'उपशीर्षक'}
                                 control={control}
-                                render={({ field: { value, onChange } }) => (
+                                render={({
+                                    field: { value, onChange },
+                                    formState: { errors },
+                                }) => (
                                     <Flex
                                         justify="space-between"
                                         align="start"
@@ -275,6 +304,11 @@ export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
                                         >
                                             All
                                         </Checkbox>
+                                        {errors && errors.उपशीर्षक && (
+                                            <span style={{ color: 'red' }}>
+                                                {errors.उपशीर्षक.message}
+                                            </span>
+                                        )}
                                     </Flex>
                                 )}
                             />

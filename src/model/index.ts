@@ -32,7 +32,7 @@ export interface Data {
 
 export interface QuadrimesterExpenseData {
     filterOptions: {
-        years: string[]
+        year: string[]
     }
     data: QuadrimesterExpenseType[]
 }
