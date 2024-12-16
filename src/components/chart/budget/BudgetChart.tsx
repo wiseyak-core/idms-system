@@ -13,23 +13,21 @@ import { Card, Col, Flex, Row, Select } from 'antd'
 import { budgetSortData } from '@/utils/budgetSortData'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { useSearchParams } from 'react-router-dom'
 import { BudgetExpensekeys } from '@/model'
-import HighchartsHeatmap from 'highcharts/modules/heatmap'
-import exporting from 'highcharts/modules/exporting'
+import HC_exporting from 'highcharts/modules/exporting'
 import WardWiseBudgetChart from './WardWiseBudgetChart'
 import SectorWiseBudgetChart from './SectorWiseBudgetChart'
 import DataGrid from '@/components/DataGrid'
+import useActiveOptions from '@/hooks/useActiveFilter'
 
-HighchartsHeatmap(Highcharts)
-
-exporting(Highcharts)
+HC_exporting(Highcharts)
 
 const BudgetChart = () => {
     const [searchParams] = useSearchParams()
-
+    const { setActiveFilters } = useActiveOptions()
     const [pieState, setPieState] = useState<BudgetExpensekeys>('खर्च')
     const [sort, setSort] = useState()
     const [chart, setChart] = useState('Line')
@@ -47,6 +45,12 @@ const BudgetChart = () => {
                 उपशीर्षक,
             }),
     })
+
+    useEffect(() => {
+        if (chartData) {
+            setActiveFilters(chartData.data.filterOptions.months)
+        }
+    }, [chartData])
 
     const coreData = chartData && chartData?.data
 

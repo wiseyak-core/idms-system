@@ -1,7 +1,6 @@
 import { CITIES } from '@/constant/cities'
 import { QUARTER } from '@/constant/quarter'
 import { TOPICS } from '@/constant/topics'
-import { YEAR } from '@/constant/year'
 import { Card, Flex, Select, Button, Checkbox } from 'antd'
 import { Controller, useForm } from 'react-hook-form'
 import { useSearchParams } from 'react-router-dom'
@@ -13,13 +12,14 @@ import {
 import useTopicSelect from '@/hooks/useTopicSelect'
 import { useEffect } from 'react'
 import { MONTHS, QUADRIMESTER_TITLE } from '@/constant'
+import useActiveOptions from '@/hooks/useActiveFilter'
 
 export const QuadrimesterFilter = () => {
     const [searchParams, setSearchParams] = useSearchParams()
-
+    const { activeFilters } = useActiveOptions()
     const { setTopic, topic } = useTopicSelect()
 
-    const { handleSubmit, control, reset, watch } =
+    const { handleSubmit, control, reset, watch, setValue } =
         useForm<QuadrimesterFilterFormSchemaType>({
             resolver: yupResolver(quadrimesterFilterFormSchema),
             defaultValues: {},
@@ -72,7 +72,7 @@ export const QuadrimesterFilter = () => {
         value: city,
     }))
 
-    const yearOptions = YEAR.map((year) => ({
+    const yearOptions = activeFilters.map((year) => ({
         label: year,
         value: year,
     }))
@@ -121,10 +121,20 @@ export const QuadrimesterFilter = () => {
                     !searchParams.getAll('शीर्षक').includes(title) &&
                     searchParams.append('शीर्षक', title)
             )
-
             setSearchParams(searchParams)
         }
     }
+
+    useEffect(() => {
+        if (शीर्षक) {
+            if (!शीर्षक.includes('all') && quarter?.includes('total')) {
+                setValue(
+                    'quarter',
+                    quarter.filter((quarter) => quarter !== 'total')
+                )
+            }
+        }
+    }, [शीर्षक])
 
     return (
         <Card
@@ -148,7 +158,6 @@ export const QuadrimesterFilter = () => {
                                             onChange(e)
                                         }}
                                         maxCount={
-                                            शीर्षक?.includes('all') ||
                                             isSingleCity
                                                 ? 1
                                                 : citiesOptions.length
@@ -202,8 +211,7 @@ export const QuadrimesterFilter = () => {
                                             onChange(e)
                                         }}
                                         maxCount={
-                                            isSingleYear ||
-                                            शीर्षक?.includes('all')
+                                            isSingleYear
                                                 ? 1
                                                 : citiesOptions.length
                                         }
@@ -229,32 +237,45 @@ export const QuadrimesterFilter = () => {
                             <Controller
                                 name="quarter"
                                 control={control}
-                                render={({ field: { onChange, value } }) => (
-                                    <Select
-                                        value={value}
-                                        onChange={(e) => {
-                                            onChange(e)
-                                        }}
-                                        maxCount={
-                                            शीर्षक?.includes('all') ||
-                                            isSingleQuarter
-                                                ? 1
-                                                : citiesOptions.length
-                                        }
-                                        mode="multiple"
-                                        popupClassName="capitalizeWords"
-                                        rootClassName="capitalizeWords"
-                                        size="middle"
-                                        showSearch
-                                        placeholder="Select a quarter"
-                                        filterOption={(input, option) =>
-                                            (option?.label ?? '')
-                                                .toLowerCase()
-                                                .includes(input.toLowerCase())
-                                        }
-                                        options={quarterOptions}
-                                    />
-                                )}
+                                render={({ field: { onChange, value } }) => {
+                                    const isTotalDisabled =
+                                        !शीर्षक?.includes('all')
+
+                                    const updatedQuarterOptions =
+                                        quarterOptions.map((option) => ({
+                                            ...option,
+                                            disabled:
+                                                option.value === 'total' &&
+                                                isTotalDisabled,
+                                        }))
+                                    return (
+                                        <Select
+                                            value={value}
+                                            onChange={(e) => {
+                                                onChange(e)
+                                            }}
+                                            maxCount={
+                                                isSingleQuarter
+                                                    ? 1
+                                                    : citiesOptions.length
+                                            }
+                                            mode="multiple"
+                                            popupClassName="capitalizeWords"
+                                            rootClassName="capitalizeWords"
+                                            size="middle"
+                                            showSearch
+                                            placeholder="Select a quarter"
+                                            filterOption={(input, option) =>
+                                                (option?.label ?? '')
+                                                    .toLowerCase()
+                                                    .includes(
+                                                        input.toLowerCase()
+                                                    )
+                                            }
+                                            options={updatedQuarterOptions}
+                                        />
+                                    )
+                                }}
                             />
                         </Flex>
                         <Flex vertical>
@@ -309,11 +330,6 @@ export const QuadrimesterFilter = () => {
                                                     onChange([])
                                                 }
                                             }}
-                                            disabled={
-                                                isSingleCity ||
-                                                isSingleYear ||
-                                                isSingleQuarter
-                                            }
                                         >
                                             All
                                         </Checkbox>

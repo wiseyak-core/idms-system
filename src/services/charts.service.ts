@@ -1,8 +1,8 @@
 import { BASE_URL } from '@/constant'
 import {
     BudgetData,
+    QuadrimesterExpenseData,
     QuadrimesterExpenseProps,
-    QuadrimesterExpenseType,
 } from '@/model'
 import axios, { AxiosResponse } from 'axios'
 
@@ -75,8 +75,8 @@ export const getQuadrimesterExpenseService = ({
     years: string[]
     quarter: string[]
     शीर्षक: string[]
-}): Promise<AxiosResponse<QuadrimesterExpenseType[]>> => {
-    const quadrimester_expense_response = axios.get<QuadrimesterExpenseType[]>(
+}): Promise<AxiosResponse<QuadrimesterExpenseData>> => {
+    const quadrimester_expense_response = axios.get<QuadrimesterExpenseData>(
         BASE_URL + '/quadrimester_expense',
         {
             params: {

@@ -10,6 +10,7 @@ import { MONTHS } from '@/constant'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import BudgetFilterDrawer from '@/components/chart/budget/BudgetFilterDrawer'
 import GuideSection from '@/components/GuideSection'
+import { ActiveFiltersProvider } from '@/hooks/useActiveFilter'
 // import GuideSection from '@/components/GuideSection'
 
 export const UserPage = () => {
@@ -32,40 +33,42 @@ export const UserPage = () => {
     }, [])
 
     return (
-        <TopicProvider>
-            <Row
-                gutter={8}
-                style={{
-                    width: '100%',
-                    padding: '1rem',
-                    maxHeight: '100vh',
-                    alignItems: 'start',
-                    overflow: 'hidden',
-                }}
-            >
-                {matches ? (
-                    <Col xs={24} sm={24} md={24} lg={5}>
-                        <Flex vertical gap={8}>
-                            <FilterSection />
-                        </Flex>
+        <ActiveFiltersProvider>
+            <TopicProvider>
+                <Row
+                    gutter={8}
+                    style={{
+                        width: '100%',
+                        padding: '1rem',
+                        maxHeight: '100vh',
+                        alignItems: 'start',
+                        overflow: 'hidden',
+                    }}
+                >
+                    {matches ? (
+                        <Col xs={24} sm={24} md={24} lg={5}>
+                            <Flex vertical gap={8}>
+                                <FilterSection />
+                            </Flex>
+                        </Col>
+                    ) : (
+                        <Col
+                            span={24}
+                            style={{
+                                marginBottom: '1rem',
+                            }}
+                        >
+                            <Flex justify="space-between" align="center">
+                                <BudgetFilterDrawer />
+                                <GuideSection />
+                            </Flex>
+                        </Col>
+                    )}
+                    <Col xs={24} sm={24} md={24} lg={19}>
+                        <ChartSection />
                     </Col>
-                ) : (
-                    <Col
-                        span={24}
-                        style={{
-                            marginBottom: '1rem',
-                        }}
-                    >
-                        <Flex justify="space-between" align="center">
-                            <BudgetFilterDrawer />
-                            <GuideSection />
-                        </Flex>
-                    </Col>
-                )}
-                <Col xs={24} sm={24} md={24} lg={19}>
-                    <ChartSection />
-                </Col>
-            </Row>
-        </TopicProvider>
+                </Row>
+            </TopicProvider>
+        </ActiveFiltersProvider>
     )
 }
