@@ -1,34 +1,21 @@
 import { Menu, MenuProps, Typography } from 'antd'
 import Sider from 'antd/es/layout/Sider'
-import {
-    ApiOutlined,
-    AppstoreOutlined,
-    BarChartOutlined,
-    DatabaseOutlined,
-    FormOutlined,
-    HomeOutlined,
-    SettingOutlined,
-} from '@ant-design/icons'
+import { DatabaseOutlined, DownloadOutlined } from '@ant-design/icons'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 type MenuItem = Required<MenuProps>['items'][number]
 
 const sidebarItems: MenuItem[] = [
-    { key: 'home', label: 'Home', icon: <HomeOutlined /> },
-    { key: 'category', label: 'Categories', icon: <AppstoreOutlined /> },
     {
         key: 'dataset',
         label: 'Manage Datasets',
         icon: <DatabaseOutlined />,
     },
-    { key: 'data-api', label: 'Data API', icon: <ApiOutlined /> },
-    { key: 'forms', label: 'Forms', icon: <FormOutlined /> },
     {
-        key: 'reports',
-        label: 'Reports & Analytics',
-        icon: <BarChartOutlined />,
+        key: 'crawler',
+        label: 'Web Crawler',
+        icon: <DownloadOutlined />,
     },
-    { key: 'settings', label: 'Settings', icon: <SettingOutlined /> },
 ]
 
 const Sidebar = () => {

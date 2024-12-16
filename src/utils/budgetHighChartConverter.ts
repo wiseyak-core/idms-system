@@ -12,9 +12,9 @@ export const budgetExpenseBarChart = (data: BudgetExpenseProps[]) => {
 
     // Define consistent colors for better visual grouping
     const colorPalette = {
-        current: ['#2ecc71', '#27ae60'], // Green shades for चालु
-        total: ['#3498db', '#2980b9'], // Blue shades for जम्मा
-        capital: ['#e74c3c', '#c0392b'], // Red shades for पूंजीगत
+        current: ['#7ed69c', '#1a7741'],
+        total: ['#7cb9e8', '#195a8c'],
+        capital: ['#ff8b83', '#a82113'],
     }
 
     const series: SeriesOptionsType[] = [
@@ -24,6 +24,7 @@ export const budgetExpenseBarChart = (data: BudgetExpenseProps[]) => {
             data: data.map((item) => item['खर्च चालु']),
             color: colorPalette.current[0],
             grouping: true,
+            visible: false,
         },
         {
             name: 'बजेट चालु',
@@ -31,6 +32,7 @@ export const budgetExpenseBarChart = (data: BudgetExpenseProps[]) => {
             data: data.map((item) => item['बजेट चालु']),
             color: colorPalette.current[1],
             grouping: true,
+            visible: false,
         },
         {
             name: 'खर्च जम्मा',
@@ -38,7 +40,6 @@ export const budgetExpenseBarChart = (data: BudgetExpenseProps[]) => {
             data: data.map((item) => item['खर्च जम्मा']),
             color: colorPalette.total[0],
             grouping: true,
-            visible: false,
         },
         {
             name: 'बजेट जम्मा',
@@ -46,7 +47,6 @@ export const budgetExpenseBarChart = (data: BudgetExpenseProps[]) => {
             data: data.map((item) => item['बजेट जम्मा']),
             color: colorPalette.total[1],
             grouping: true,
-            visible: false,
         },
         {
             name: 'खर्च पूंजीगत',
@@ -508,21 +508,25 @@ export const budgetExpenseAreaChart = (
                 name: 'बजेट चालु',
                 data: data.map((item) => item['बजेट चालु']),
                 type: 'area',
+                visible: false,
             },
             {
                 name: 'खर्च चालु',
                 data: data.map((item) => item['खर्च चालु']),
                 type: 'area',
+                visible: false,
             },
             {
                 name: 'बजेट पूंजीगत',
                 data: data.map((item) => item['बजेट पूंजीगत']),
                 type: 'area',
+                visible: false,
             },
             {
                 name: 'खर्च पूंजीगत',
                 data: data.map((item) => item['खर्च पूंजीगत']),
                 type: 'area',
+                visible: false,
             },
             {
                 name: 'बजेट जम्मा',
@@ -562,21 +566,25 @@ export const budgetExpenseLineChart = (
                 name: 'बजेट चालु',
                 data: data.map((item) => item['बजेट चालु']),
                 type: 'line',
+                visible: false,
             },
             {
                 name: 'खर्च चालु',
                 data: data.map((item) => item['खर्च चालु']),
                 type: 'line',
+                visible: false,
             },
             {
                 name: 'बजेट पूंजीगत',
                 data: data.map((item) => item['बजेट पूंजीगत']),
                 type: 'line',
+                visible: false,
             },
             {
                 name: 'खर्च पूंजीगत',
                 data: data.map((item) => item['खर्च पूंजीगत']),
                 type: 'line',
+                visible: false,
             },
             {
                 name: 'बजेट जम्मा',

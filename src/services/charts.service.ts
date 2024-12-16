@@ -15,56 +15,6 @@ type GenericDataServiceProps = {
     months?: string
 }
 
-export const getGenericDataService = ({
-    topics,
-    cities,
-    year,
-    chart_type,
-    title,
-    quarter,
-}: {
-    topics: string
-    cities: string
-    year?: string
-    title?: string
-    quarter?: string
-    chart_type?: string
-}): Promise<AxiosResponse<QuadrimesterExpenseProps>> | null => {
-    if (topics === 'quadrimester_expense') {
-        const quadrimester_expense_response =
-            axios.get<QuadrimesterExpenseProps>(
-                BASE_URL + '/quadrimester_expense/qe',
-                {
-                    params: {
-                        city: cities,
-                        year: year,
-                        title: title,
-                        quarter: quarter,
-                        chart_type: chart_type,
-                    },
-                    paramsSerializer: (params) => {
-                        return Object.keys(params)
-                            .map((key) => {
-                                const value = Array.isArray(params[key])
-                                    ? params[key]
-                                          .map(
-                                              (v) =>
-                                                  `${key}=${encodeURIComponent(v)}`
-                                          )
-                                          .join('&')
-                                    : `${key}=${encodeURIComponent(params[key])}`
-                                return value
-                            })
-                            .join('&')
-                    },
-                }
-            )
-        return quadrimester_expense_response
-    } else {
-        return null
-    }
-}
-
 export const getQuadrimesterExpenseService = ({
     cities,
     years,
