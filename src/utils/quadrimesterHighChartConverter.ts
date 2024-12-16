@@ -823,3 +823,138 @@ export const quadrimesterYearTable = (data: any[], selectedYears: string[]) => {
         ],
     }
 }
+
+export const quadrimesterBudgetExpenseChartMultipleCity = (
+    data: any[],
+    cities?: string[]
+) => {
+    const highChartOptions: Highcharts.Options = {
+        chart: {
+            type: 'bar',
+            height: 500,
+            marginRight: 100,
+        },
+        title: {
+            text: 'चौमासिक बजेट / खर्च',
+        },
+        xAxis: {
+            categories: cities || [],
+            labels: {
+                style: {
+                    fontSize: '12px',
+                },
+            },
+        },
+        yAxis: {
+            title: {
+                text: 'रुपैयाँ',
+            },
+            labels: {
+                formatter: function () {
+                    return 'रु ' + convertToNepaliCurrency(this.value as number)
+                },
+                style: {
+                    fontSize: '12px',
+                },
+            },
+        },
+        plotOptions: {
+            bar: {
+                grouping: true,
+                groupPadding: 0.1,
+                pointPadding: 0.05,
+                borderWidth: 0,
+            },
+        },
+        legend: {
+            align: 'right',
+            verticalAlign: 'top',
+            layout: 'vertical',
+            symbolRadius: 2,
+            itemStyle: {
+                fontSize: '12px',
+            },
+        },
+        tooltip: {
+            shared: true,
+            formatter: function () {
+                if (!this.points) return ''
+                let s = `<b>${this.x}</b><br/>`
+                this.points.forEach((point) => {
+                    s += `${point.series.name}: रु ${convertToNepaliCurrency(point.y || 0)}<br/>`
+                })
+                return s
+            },
+        },
+        series: [
+            {
+                name: 'प्रथम चौमासिक बजेट',
+                data: data.map((item) => item['प्रथम चौमासिक बजेट']) || [],
+                type: 'bar',
+                color: '#2ecc71',
+            },
+            {
+                name: 'प्रथम चौमासिक खर्च',
+                data: data.map((item) => item['प्रथम चौमासिक खर्च']) || [],
+                type: 'bar',
+                color: '#27ae60',
+            },
+            {
+                name: 'दोश्रो चौमासिक बजेट',
+                data: data.map((item) => item['दोश्रो चौमासिक\tबजेट']) || [],
+                type: 'bar',
+                color: '#3498db',
+                visible: false,
+            },
+            {
+                name: 'दोश्रो चौमासिक खर्च',
+                data: data.map((item) => item['दोश्रो चौमासिक खर्च']) || [],
+                type: 'bar',
+                color: '#2980b9',
+                visible: false,
+            },
+            {
+                name: 'तेस्रो चौमासिक बजेट',
+                data: data.map((item) => item['तेस्रो चौमासिक\tबजेट']) || [],
+                type: 'bar',
+                color: '#e74c3c',
+                visible: false,
+            },
+            {
+                name: 'तेस्रो चौमासिक खर्च',
+                data: data.map((item) => item['तेस्रो चौमासिक खर्च']) || [],
+                type: 'bar',
+                color: '#c0392b',
+                visible: false,
+            },
+        ],
+        credits: {
+            enabled: false,
+        },
+        exporting: {
+            enabled: true,
+            buttons: {
+                contextButton: {
+                    menuItems: ['downloadPNG', 'downloadPDF', 'downloadCSV'],
+                },
+            },
+        },
+        responsive: {
+            rules: [
+                {
+                    condition: {
+                        maxWidth: 500,
+                    },
+                    chartOptions: {
+                        legend: {
+                            align: 'center',
+                            verticalAlign: 'bottom',
+                            layout: 'horizontal',
+                        },
+                    },
+                },
+            ],
+        },
+    }
+    return highChartOptions
+}

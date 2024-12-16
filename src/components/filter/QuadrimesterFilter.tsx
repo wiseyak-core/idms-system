@@ -72,10 +72,12 @@ export const QuadrimesterFilter = () => {
         value: city,
     }))
 
-    const yearOptions = activeFilters.map((year) => ({
-        label: year,
-        value: year,
-    }))
+    const yearOptions =
+        activeFilters &&
+        activeFilters.map((year) => ({
+            label: year,
+            value: year,
+        }))
 
     const quarterOptions = QUARTER.map((quarter) => ({
         label: quarter,
@@ -152,30 +154,42 @@ export const QuadrimesterFilter = () => {
                             <Controller
                                 control={control}
                                 name="cities"
-                                render={({ field: { onChange, value } }) => (
-                                    <Select
-                                        onChange={(e) => {
-                                            onChange(e)
-                                        }}
-                                        maxCount={
-                                            isSingleCity
-                                                ? 1
-                                                : citiesOptions.length
-                                        }
-                                        mode="multiple"
-                                        value={value}
-                                        popupClassName="capitalizeWords"
-                                        rootClassName="capitalizeWords"
-                                        size="middle"
-                                        showSearch
-                                        placeholder="Select a district"
-                                        filterOption={(input, option) =>
-                                            (option?.label ?? '')
-                                                .toLowerCase()
-                                                .includes(input.toLowerCase())
-                                        }
-                                        options={citiesOptions}
-                                    />
+                                render={({
+                                    field: { onChange, value },
+                                    formState: { errors },
+                                }) => (
+                                    <>
+                                        <Select
+                                            onChange={(e) => {
+                                                onChange(e)
+                                            }}
+                                            maxCount={
+                                                isSingleCity
+                                                    ? 1
+                                                    : citiesOptions.length
+                                            }
+                                            mode="multiple"
+                                            value={value}
+                                            popupClassName="capitalizeWords"
+                                            rootClassName="capitalizeWords"
+                                            size="middle"
+                                            showSearch
+                                            placeholder="Select a district"
+                                            filterOption={(input, option) =>
+                                                (option?.label ?? '')
+                                                    .toLowerCase()
+                                                    .includes(
+                                                        input.toLowerCase()
+                                                    )
+                                            }
+                                            options={citiesOptions}
+                                        />
+                                        {errors && errors.cities && (
+                                            <span style={{ color: 'red' }}>
+                                                {errors.cities.message}
+                                            </span>
+                                        )}
+                                    </>
                                 )}
                             />
                         </Flex>
@@ -205,30 +219,42 @@ export const QuadrimesterFilter = () => {
                             <Controller
                                 name="years"
                                 control={control}
-                                render={({ field: { onChange, value } }) => (
-                                    <Select
-                                        onChange={(e) => {
-                                            onChange(e)
-                                        }}
-                                        maxCount={
-                                            isSingleYear
-                                                ? 1
-                                                : citiesOptions.length
-                                        }
-                                        mode="multiple"
-                                        value={value}
-                                        popupClassName="capitalizeWords"
-                                        rootClassName="capitalizeWords"
-                                        size="middle"
-                                        showSearch
-                                        placeholder="Select a year"
-                                        filterOption={(input, option) =>
-                                            (option?.label ?? '')
-                                                .toLowerCase()
-                                                .includes(input.toLowerCase())
-                                        }
-                                        options={yearOptions}
-                                    />
+                                render={({
+                                    field: { onChange, value },
+                                    formState: { errors },
+                                }) => (
+                                    <>
+                                        <Select
+                                            onChange={(e) => {
+                                                onChange(e)
+                                            }}
+                                            maxCount={
+                                                isSingleYear
+                                                    ? 1
+                                                    : citiesOptions.length
+                                            }
+                                            mode="multiple"
+                                            value={value}
+                                            popupClassName="capitalizeWords"
+                                            rootClassName="capitalizeWords"
+                                            size="middle"
+                                            showSearch
+                                            placeholder="Select a year"
+                                            filterOption={(input, option) =>
+                                                (option?.label ?? '')
+                                                    .toLowerCase()
+                                                    .includes(
+                                                        input.toLowerCase()
+                                                    )
+                                            }
+                                            options={yearOptions}
+                                        />
+                                        {errors && errors.years && (
+                                            <span style={{ color: 'red' }}>
+                                                {errors.years.message}
+                                            </span>
+                                        )}
+                                    </>
                                 )}
                             />
                         </Flex>
@@ -237,7 +263,10 @@ export const QuadrimesterFilter = () => {
                             <Controller
                                 name="quarter"
                                 control={control}
-                                render={({ field: { onChange, value } }) => {
+                                render={({
+                                    field: { onChange, value },
+                                    formState: { errors },
+                                }) => {
                                     const isTotalDisabled =
                                         !शीर्षक?.includes('all')
 
@@ -249,31 +278,38 @@ export const QuadrimesterFilter = () => {
                                                 isTotalDisabled,
                                         }))
                                     return (
-                                        <Select
-                                            value={value}
-                                            onChange={(e) => {
-                                                onChange(e)
-                                            }}
-                                            maxCount={
-                                                isSingleQuarter
-                                                    ? 1
-                                                    : citiesOptions.length
-                                            }
-                                            mode="multiple"
-                                            popupClassName="capitalizeWords"
-                                            rootClassName="capitalizeWords"
-                                            size="middle"
-                                            showSearch
-                                            placeholder="Select a quarter"
-                                            filterOption={(input, option) =>
-                                                (option?.label ?? '')
-                                                    .toLowerCase()
-                                                    .includes(
-                                                        input.toLowerCase()
-                                                    )
-                                            }
-                                            options={updatedQuarterOptions}
-                                        />
+                                        <>
+                                            <Select
+                                                value={value}
+                                                onChange={(e) => {
+                                                    onChange(e)
+                                                }}
+                                                maxCount={
+                                                    isSingleQuarter
+                                                        ? 1
+                                                        : citiesOptions.length
+                                                }
+                                                mode="multiple"
+                                                popupClassName="capitalizeWords"
+                                                rootClassName="capitalizeWords"
+                                                size="middle"
+                                                showSearch
+                                                placeholder="Select a quarter"
+                                                filterOption={(input, option) =>
+                                                    (option?.label ?? '')
+                                                        .toLowerCase()
+                                                        .includes(
+                                                            input.toLowerCase()
+                                                        )
+                                                }
+                                                options={updatedQuarterOptions}
+                                            />
+                                            {errors && errors.quarter && (
+                                                <span style={{ color: 'red' }}>
+                                                    {errors.quarter.message}
+                                                </span>
+                                            )}
+                                        </>
                                     )
                                 }}
                             />
@@ -283,7 +319,10 @@ export const QuadrimesterFilter = () => {
                             <Controller
                                 name="शीर्षक"
                                 control={control}
-                                render={({ field: { onChange, value } }) => (
+                                render={({
+                                    field: { onChange, value },
+                                    formState: { errors },
+                                }) => (
                                     <Flex
                                         justify="space-between"
                                         align="start"
@@ -333,6 +372,11 @@ export const QuadrimesterFilter = () => {
                                         >
                                             All
                                         </Checkbox>
+                                        {errors && errors.शीर्षक && (
+                                            <span style={{ color: 'red' }}>
+                                                {errors.शीर्षक.message}
+                                            </span>
+                                        )}
                                     </Flex>
                                 )}
                             />
