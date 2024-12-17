@@ -3,8 +3,9 @@ import { DashboardLayout } from './components/dashboard/DashboardLayout'
 import { DatasetPage } from './pages/DatasetPage'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { UserPage } from './pages/UserPage'
 import CrawlerPage from './pages/CrawlerPage'
+import NotFoundPage from './pages/NotFoundPage'
+import UserPage from './pages/UserPage'
 
 export const queryClient = new QueryClient()
 
@@ -18,6 +19,7 @@ function App() {
                         <Route path="/dataset" element={<DatasetPage />} />
                         <Route path="/crawler" element={<CrawlerPage />} />
                     </Route>
+                    <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </BrowserRouter>
         </QueryClientProvider>

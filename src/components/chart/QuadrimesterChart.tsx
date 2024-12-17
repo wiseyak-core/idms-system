@@ -51,7 +51,6 @@ const QuadrimesterChart = () => {
 
     useEffect(() => {
         if (chartData) {
-            console.log(chartData)
             setActiveFilters(chartData.data.filterOptions.year)
         }
     }, [chartData])
@@ -78,7 +77,7 @@ const QuadrimesterChart = () => {
         coreData && quadrimesterBudgetExpenseChartMultipleCity(coreData, cities)
 
     const sectorWiseData =
-        coreData && quarterlyBudgetAnalysis(coreData, quarter[0], analysisType)
+        coreData && quarterlyBudgetAnalysis(coreData, analysisType)
 
     const filteredData =
         coreData && coreData?.filter((item: any) => item['शीर्षक'] !== '')

@@ -192,13 +192,13 @@ const UploadDataSetModal = () => {
                                 >
                                     {TOPICS.map((item) => (
                                         <Select.Option
-                                            key={item}
-                                            value={item}
+                                            key={item.value}
+                                            value={item.value}
                                             style={{
                                                 textTransform: 'capitalize',
                                             }}
                                         >
-                                            {item}
+                                            {item.label}
                                         </Select.Option>
                                     ))}
                                 </Select>

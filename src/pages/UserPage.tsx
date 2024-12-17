@@ -13,7 +13,7 @@ import GuideSection from '@/components/GuideSection'
 import { ActiveFiltersProvider } from '@/hooks/useActiveFilter'
 // import GuideSection from '@/components/GuideSection'
 
-export const UserPage = () => {
+const UserPage = () => {
     const [searchParams, setSearchParams] = useSearchParams()
     const topic = searchParams.get('topic') || ''
     const city = searchParams.get('city') || ''
@@ -24,7 +24,7 @@ export const UserPage = () => {
         if (topic.length === 0 && city.length === 0) {
             setSearchParams({
                 ...searchParams,
-                topic: TOPICS[0],
+                topic: TOPICS[0].value,
                 cities: CITIES[0],
                 months: MONTHS[0],
                 उपशीर्षक: 'all',
@@ -60,7 +60,13 @@ export const UserPage = () => {
                         >
                             <Flex justify="space-between" align="center">
                                 <BudgetFilterDrawer />
-                                <GuideSection />
+                                <GuideSection
+                                    category={
+                                        topic === TOPICS[0].value
+                                            ? TOPICS[0].value
+                                            : TOPICS[1].value
+                                    }
+                                />
                             </Flex>
                         </Col>
                     )}
@@ -72,3 +78,5 @@ export const UserPage = () => {
         </ActiveFiltersProvider>
     )
 }
+
+export default UserPage
