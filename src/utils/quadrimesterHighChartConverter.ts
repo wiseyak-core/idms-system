@@ -33,7 +33,7 @@ export const quadrimesterExpenseBarChart = (
                     item['प्रथम चौमासिक खर्च'] ||
                         item['दोश्रो चौमासिक खर्च'] ||
                         item['तेस्रो चौमासिक खर्च'] ||
-                        item['बजेट जम्मा']
+                        item['खर्च जम्मा']
                 )
             ),
         },
@@ -509,70 +509,54 @@ export const quadrimesterExpenseQuarterlyTable = (
             data.filter((item) => item.शीर्षक !== '').map((item) => item.शीर्षक)
         ),
     ]
-    const years = [...new Set(data.map((item) => item.year))]
 
     const quarterConfig = {
         first: {
             budgetField: 'प्रथम चौमासिक बजेट',
             expenseField: 'प्रथम चौमासिक खर्च',
-            budgetKey: 'firstQuarterBudget',
-            expenseKey: 'firstQuarterExpense',
-            format: 'First Quarter',
+            format: 'प्रथम चौमासिक',
         },
         second: {
             budgetField: 'दोश्रो चौमासिक\tबजेट',
             expenseField: 'दोश्रो चौमासिक खर्च',
-            budgetKey: 'secondQuarterBudget',
-            expenseKey: 'secondQuarterExpense',
-            format: 'Second Quarter',
+            format: 'दोश्रो चौमासिक',
         },
         third: {
             budgetField: 'तेस्रो चौमासिक\tबजेट',
             expenseField: 'तेस्रो चौमासिक खर्च',
-            budgetKey: 'thirdQuarterBudget',
-            expenseKey: 'thirdQuarterExpense',
-            format: 'Third Quarter',
+            format: 'तेस्रो चौमासिक',
         },
         total: {
             budgetField: 'बजेट जम्मा',
             expenseField: 'खर्च जम्मा',
-            balanceField: 'मौज्दात जम्मा',
-            budgetKey: 'totalBudget',
-            expenseKey: 'totalExpense',
-            balanceKey: 'totalBalance',
-            format: 'Total',
+            format: 'वार्षिक',
         },
     }
 
-    // Group data by title and year
+    // Group data by title
     const dataMap = new Map()
     data.forEach((item) => {
-        const key = `${item.शीर्षक}_${item.year}`
-        if (!dataMap.has(key)) {
-            dataMap.set(key, {})
+        const title = item.शीर्षक
+        if (!dataMap.has(title)) {
+            dataMap.set(title, {})
         }
 
+        // Handle each quarter's data
         selectedQuarters.forEach((quarter) => {
             const config = quarterConfig[quarter as keyof typeof quarterConfig]
             if (config) {
-                if (quarter === 'total') {
-                    // Set total values only if total is selected
-                    dataMap.get(key)[config.budgetKey] =
-                        parseFloat(item[config.budgetField]) || 0
-                    dataMap.get(key)[config.expenseKey] =
-                        parseFloat(item[config.expenseField]) || 0
-                } else {
-                    // Set quarter values
-                    if (item[config.budgetField]) {
-                        dataMap.get(key)[`${quarter}_budget`] = parseFloat(
-                            item[config.budgetField]
-                        )
-                    }
-                    if (item[config.expenseField]) {
-                        dataMap.get(key)[`${quarter}_expense`] = parseFloat(
-                            item[config.expenseField]
-                        )
-                    }
+                const currentData = dataMap.get(title)
+
+                // Check if the fields exist in the item before parsing
+                if (item[config.budgetField] !== undefined) {
+                    currentData[`${quarter}_budget`] = parseFloat(
+                        item[config.budgetField]?.toString() || '0'
+                    )
+                }
+                if (item[config.expenseField] !== undefined) {
+                    currentData[`${quarter}_expense`] = parseFloat(
+                        item[config.expenseField]?.toString() || '0'
+                    )
                 }
             }
         })
@@ -583,92 +567,43 @@ export const quadrimesterExpenseQuarterlyTable = (
         title: uniqueTitles,
     }
 
-    // Generate columns for each year and selected quarters
-    years.forEach((year) => {
-        selectedQuarters.forEach((quarter) => {
-            const config = quarterConfig[quarter as keyof typeof quarterConfig]
-            if (config) {
-                if (quarter === 'total') {
-                    // Add total columns only if total is selected
-                    columns[`${config.budgetKey}_${year}`] = uniqueTitles.map(
-                        (title) => {
-                            const key = `${title}_${year}`
-                            return dataMap.get(key)?.[config.budgetKey] || 0
-                        }
-                    )
-                    columns[`${config.expenseKey}_${year}`] = uniqueTitles.map(
-                        (title) => {
-                            const key = `${title}_${year}`
-                            return dataMap.get(key)?.[config.expenseKey] || 0
-                        }
-                    )
-                } else {
-                    // Add quarter columns
-                    columns[`${config.budgetKey}_${year}`] = uniqueTitles.map(
-                        (title) => {
-                            const key = `${title}_${year}`
-                            return dataMap.get(key)?.[`${quarter}_budget`] || 0
-                        }
-                    )
-                    columns[`${config.expenseKey}_${year}`] = uniqueTitles.map(
-                        (title) => {
-                            const key = `${title}_${year}`
-                            return dataMap.get(key)?.[`${quarter}_expense`] || 0
-                        }
-                    )
-                }
-            }
+    // Generate budget and expense columns for each selected quarter
+    selectedQuarters.forEach((quarter) => {
+        columns[`${quarter}_budget`] = uniqueTitles.map((title) => {
+            const value = dataMap.get(title)?.[`${quarter}_budget`]
+            return value !== undefined ? value : 0
+        })
+        columns[`${quarter}_expense`] = uniqueTitles.map((title) => {
+            const value = dataMap.get(title)?.[`${quarter}_expense`]
+            return value !== undefined ? value : 0
         })
     })
+
+    // Create header structure
+    const headerColumns = selectedQuarters.map((quarter) => ({
+        format: quarterConfig[quarter as keyof typeof quarterConfig].format,
+        columns: [
+            {
+                columnId: `${quarter}_budget`,
+                format: 'बजेट',
+            },
+            {
+                columnId: `${quarter}_expense`,
+                format: 'खर्च',
+            },
+        ],
+    }))
 
     return {
         dataTable: {
             columns: columns,
         },
-        header: [
-            'title',
-            ...years.map((year) => ({
-                format: year,
-                columns: selectedQuarters.map((quarter) => {
-                    const config =
-                        quarterConfig[quarter as keyof typeof quarterConfig]
-                    if (quarter === 'total') {
-                        return {
-                            format: 'Total',
-                            columns: [
-                                {
-                                    columnId: `${config.budgetKey}_${year}`,
-                                    format: 'Budget',
-                                },
-                                {
-                                    columnId: `${config.expenseKey}_${year}`,
-                                    format: 'Expense',
-                                },
-                            ],
-                        }
-                    } else {
-                        return {
-                            format: config.format,
-                            columns: [
-                                {
-                                    columnId: `${config.budgetKey}_${year}`,
-                                    format: 'Budget',
-                                },
-                                {
-                                    columnId: `${config.expenseKey}_${year}`,
-                                    format: 'Expense',
-                                },
-                            ],
-                        }
-                    }
-                }),
-            })),
-        ],
+        header: ['title', ...headerColumns],
         columns: [
             {
                 id: 'title',
                 header: {
-                    format: 'Budget Title',
+                    format: 'शीर्षक',
                 },
             },
         ],

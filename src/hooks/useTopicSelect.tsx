@@ -1,4 +1,5 @@
 import { QUADRIMESTER_TITLE } from '@/constant'
+import { CITIES } from '@/constant/cities'
 import { QUARTER } from '@/constant/quarter'
 import { YEAR } from '@/constant/year'
 import {
@@ -30,6 +31,7 @@ export const TopicProvider = ({ children }: PropsWithChildren) => {
     }, [searchParams])
     const setTopic = (topic: string) => {
         searchParams.set('topic', topic)
+        searchParams.set('cities', CITIES[0])
         switch (topic) {
             case 'quadrimester_expense':
                 searchParams.set('topic', 'quadrimester_expense')
