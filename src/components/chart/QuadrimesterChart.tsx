@@ -93,6 +93,7 @@ const QuadrimesterChart = () => {
         quadrimesterExpenseLineChart(filteredData, years, quarter)
 
     const sortedData = filteredData && quadrimesterSortData(filteredData, sort)
+    console.log(sortedData, ' fdsfsdfsd')
 
     const structuredData = sortedData && quadrimesterExpenseBarChart(sortedData)
 
