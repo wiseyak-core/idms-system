@@ -13,8 +13,11 @@ import useTopicSelect from '@/hooks/useTopicSelect'
 import { useEffect } from 'react'
 import { MONTHS, QUADRIMESTER_TITLE } from '@/constant'
 import useActiveOptions from '@/hooks/useActiveFilter'
+import GuideSection from '../GuideSection'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 export const QuadrimesterFilter = () => {
+    const matches = useMediaQuery('(min-width: 1024px)')
     const [searchParams, setSearchParams] = useSearchParams()
     const { activeFilters } = useActiveOptions()
     const { setTopic, topic } = useTopicSelect()
@@ -62,10 +65,7 @@ export const QuadrimesterFilter = () => {
         })
     }, [searchParams])
 
-    const topicsOptions = TOPICS.map((topic) => ({
-        label: topic.replace('_', ' '),
-        value: topic,
-    }))
+    const topicsOptions = TOPICS
 
     const citiesOptions = CITIES.map((city) => ({
         label: city,
@@ -382,23 +382,27 @@ export const QuadrimesterFilter = () => {
                             />
                         </Flex>
                     </Flex>
-                    <Button type="primary" htmlType="submit">
-                        Filter
-                    </Button>
-                    <Button
-                        type="default"
-                        onClick={() => {
-                            setSearchParams({
-                                ...searchParams,
-                                topic: TOPICS[0],
-                                cities: CITIES[0],
-                                months: MONTHS[0],
-                                उपशीर्षक: 'all',
-                            })
-                        }}
-                    >
-                        Default
-                    </Button>
+                    <Flex vertical gap={16}>
+                        <Button type="primary" htmlType="submit">
+                            Filter
+                        </Button>
+
+                        <Button
+                            type="default"
+                            onClick={() => {
+                                setSearchParams({
+                                    ...searchParams,
+                                    topic: TOPICS[0].value,
+                                    cities: CITIES[0],
+                                    months: MONTHS[0],
+                                    उपशीर्षक: 'all',
+                                })
+                            }}
+                        >
+                            Default
+                        </Button>
+                        {matches && <GuideSection category={TOPICS[1].value} />}
+                    </Flex>
                 </Flex>
             </form>
         </Card>

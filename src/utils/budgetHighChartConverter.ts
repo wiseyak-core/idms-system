@@ -774,7 +774,7 @@ export const sectorWiseBudget = (data: BudgetExpenseProps[]) => {
     const highChartOptions: Highcharts.Options = {
         chart: {
             type: 'pie',
-            height: 500,
+            height: 800,
         },
         title: {
             text: 'बजेट विश्लेषण',
@@ -794,10 +794,10 @@ export const sectorWiseBudget = (data: BudgetExpenseProps[]) => {
                     style: {
                         fontSize: '11px',
                     },
-                    distance: 30, // Adjust label distance from pie
+                    distance: 30,
                 },
-                showInLegend: false, // Remove legend
-                size: '80%', // Make pie chart larger
+                showInLegend: true,
+                size: '80%',
             },
         },
         tooltip: {
@@ -808,6 +808,7 @@ export const sectorWiseBudget = (data: BudgetExpenseProps[]) => {
                 'खर्च: रु {point.expense:,.0f}<br/>' +
                 'खर्च प्रतिशत: {point.percentage:.1f}%',
         },
+
         series: [
             {
                 type: 'pie',
@@ -825,6 +826,25 @@ export const sectorWiseBudget = (data: BudgetExpenseProps[]) => {
             '#be185d',
             '#854d0e',
         ],
+        responsive: {
+            rules: [
+                {
+                    condition: {
+                        maxWidth: 500,
+                    },
+                    chartOptions: {
+                        chart: {
+                            height: 1600,
+                        },
+                        plotOptions: {
+                            pie: {
+                                size: '50%',
+                            },
+                        },
+                    },
+                },
+            ],
+        },
     }
 
     return highChartOptions

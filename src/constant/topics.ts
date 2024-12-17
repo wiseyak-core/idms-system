@@ -1,1 +1,10 @@
-export const TOPICS = ['budget_expense', 'quadrimester_expense']
+export const TOPICS = [
+    {
+        label: 'Budget Expense (बजेट खर्च)',
+        value: 'budget_expense',
+    },
+    {
+        label: 'Quadrimester Expense (चौमासिक खर्च)',
+        value: 'quadrimester_expense',
+    },
+]

@@ -1,9 +1,14 @@
 import { Button, Modal, Typography, Space, List } from 'antd'
 import { useState } from 'react'
+import {
+    budgetFilterGuideItems,
+    quadrimesterFilterGuideItems,
+} from '@/constant/guide'
+import { TOPICS } from '@/constant/topics'
 
 const { Paragraph } = Typography
 
-const GuideSection = () => {
+const GuideSection = ({ category }: { category: string }) => {
     const [isModalOpen, setIsModalOpen] = useState(false)
 
     const showModal = () => {
@@ -17,37 +22,6 @@ const GuideSection = () => {
     const handleCancel = () => {
         setIsModalOpen(false)
     }
-
-    const guideItems = [
-        {
-            key: 'districts',
-            title: 'Districts :',
-            description:
-                'Select multiple districts (max 1 if other filters have multiple selections)',
-        },
-        {
-            key: 'categories',
-            title: 'Categories :',
-            description: 'Choose a single category from available options',
-        },
-        {
-            key: 'months',
-            title: 'Months :',
-            description:
-                'Pick multiple months (limited to 1 if districts or subtitles have multiple selections)',
-        },
-        {
-            key: 'subtitles',
-            title: 'Subtitles (उपशीर्षक) :',
-            description: 'Select specific subtitles or check "All"',
-        },
-        {
-            key: 'note',
-            title: '',
-            description:
-                'Some selections may be disabled to maintain data clarity',
-        },
-    ]
 
     return (
         <>
@@ -73,7 +47,11 @@ const GuideSection = () => {
                 >
                     <List
                         itemLayout="vertical"
-                        dataSource={guideItems}
+                        dataSource={
+                            category === TOPICS[0].value
+                                ? budgetFilterGuideItems
+                                : quadrimesterFilterGuideItems
+                        }
                         renderItem={(item) => (
                             <List.Item>
                                 {item.title && (

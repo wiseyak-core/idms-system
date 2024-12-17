@@ -20,7 +20,8 @@ export const quadrimesterExpenseBarChart = (
                 parseFloat(
                     item['प्रथम चौमासिक बजेट'] ||
                         item['दोश्रो चौमासिक	बजेट'] ||
-                        item['तेस्रो चौमासिक	बजेट']
+                        item['तेस्रो चौमासिक	बजेट'] ||
+                        item['बजेट जम्मा']
                 )
             ),
         },
@@ -31,7 +32,8 @@ export const quadrimesterExpenseBarChart = (
                 parseFloat(
                     item['प्रथम चौमासिक खर्च'] ||
                         item['दोश्रो चौमासिक खर्च'] ||
-                        item['तेस्रो चौमासिक खर्च']
+                        item['तेस्रो चौमासिक खर्च'] ||
+                        item['बजेट जम्मा']
                 )
             ),
         },
@@ -103,6 +105,12 @@ export const quadrimesterExpensePieChart = (
             acc['तेस्रो चौमासिक खर्च'] += parseFloat(
                 item['तेस्रो चौमासिक खर्च'] || '0'
             )
+            acc['बजेट जम्मा'] += parseFloat(
+                item['बजेट जम्मा']?.toString() || '0'
+            )
+            acc['खर्च जम्मा'] += parseFloat(
+                item['खर्च जम्मा']?.toString() || '0'
+            )
             return acc
         },
         {
@@ -112,18 +120,20 @@ export const quadrimesterExpensePieChart = (
             'प्रथम चौमासिक खर्च': 0,
             'दोश्रो चौमासिक खर्च': 0,
             'तेस्रो चौमासिक खर्च': 0,
+            'बजेट जम्मा': 0,
+            'खर्च जम्मा': 0,
         }
     )
 
     const totalBudget =
         totalData['प्रथम चौमासिक बजेट'] +
-        totalData['दोश्रो चौमासिक बजेट'] +
-        totalData['तेस्रो चौमासिक बजेट']
+            totalData['दोश्रो चौमासिक बजेट'] +
+            totalData['तेस्रो चौमासिक बजेट'] || totalData['बजेट जम्मा']
 
     const totalExpense =
         totalData['प्रथम चौमासिक खर्च'] +
-        totalData['दोश्रो चौमासिक खर्च'] +
-        totalData['तेस्रो चौमासिक खर्च']
+            totalData['दोश्रो चौमासिक खर्च'] +
+            totalData['तेस्रो चौमासिक खर्च'] || totalData['खर्च जम्मा']
 
     return {
         chart: {
@@ -228,25 +238,52 @@ export const quadrimesterExpenseAreaChart = (
         series: [
             {
                 name: 'चौमासिक खर्च',
-                data: data.map(
-                    (item) =>
-                        item['प्रथम चौमासिक खर्च'] ||
-                        item['दोश्रो चौमासिक खर्च'] ||
-                        item['तेस्रो चौमासिक खर्च']
-                ),
+                data: data.map((item) => {
+                    const value = parseFloat(
+                        item['प्रथम चौमासिक खर्च']?.toString() ||
+                            item['दोश्रो चौमासिक खर्च']?.toString() ||
+                            item['तेस्रो चौमासिक खर्च']?.toString() ||
+                            '0'
+                    )
+                    return value
+                }),
                 type: 'area',
             },
             {
                 name: 'चौमासिक बजेट',
-                data: data.map(
-                    (item) =>
-                        item['प्रथम चौमासिक बजेट'] ||
-                        item['दोश्रो चौमासिक	बजेट'] ||
-                        item['तेस्रो चौमासिक	बजेट']
-                ),
+                data: data.map((item) => {
+                    const value = parseFloat(
+                        item['प्रथम चौमासिक बजेट']?.toString() ||
+                            item['दोश्रो चौमासिक\tबजेट']?.toString() ||
+                            item['तेस्रो चौमासिक\tबजेट']?.toString() ||
+                            '0'
+                    )
+                    return value
+                }),
                 type: 'area',
             },
         ],
+        plotOptions: {
+            area: {
+                fillOpacity: 0.5,
+                marker: {
+                    enabled: true,
+                    radius: 4,
+                },
+                lineWidth: 1,
+                states: {
+                    hover: {
+                        lineWidth: 2,
+                    },
+                },
+            },
+        },
+        tooltip: {
+            formatter: function () {
+                return `<b>${this.series.name}</b><br/>
+                        ${this.x}: Rs ${convertToNepaliCurrency(this.y as number)}`
+            },
+        },
     }
     return highChartOptions
 }
@@ -256,15 +293,17 @@ export const quadrimesterExpenseLineChart = (
     quarter?: string[],
     years?: string[]
 ) => {
+    const category = quarter && quarter?.length > 1 ? quarter : years
+
     const highChartOptions: Highcharts.Options = {
         chart: {
-            type: 'line', // Changed from 'area' to 'line'
+            type: 'line',
         },
         title: {
             text: 'बजेट / खर्च',
         },
         xAxis: {
-            categories: quarter || years || [],
+            categories: category || [],
         },
         yAxis: {
             labels: {
@@ -276,32 +315,37 @@ export const quadrimesterExpenseLineChart = (
         series: [
             {
                 name: 'चौमासिक खर्च',
-                data: data.map(
-                    (item) =>
-                        item['प्रथम चौमासिक खर्च'] ||
-                        item['दोश्रो चौमासिक खर्च'] ||
-                        item['तेस्रो चौमासिक खर्च']
-                ),
-                type: 'line', // Changed from 'area' to 'line'
+                data: data.map((item) => {
+                    const value = parseFloat(
+                        item['प्रथम चौमासिक खर्च']?.toString() ||
+                            item['दोश्रो चौमासिक खर्च']?.toString() ||
+                            item['तेस्रो चौमासिक खर्च']?.toString() ||
+                            '0'
+                    )
+                    return value
+                }),
+                type: 'line',
                 marker: {
-                    enabled: true, // Enables data points markers
+                    enabled: true,
                 },
             },
             {
                 name: 'चौमासिक बजेट',
-                data: data.map(
-                    (item) =>
-                        item['प्रथम चौमासिक बजेट'] ||
-                        item['दोश्रो चौमासिक	बजेट'] ||
-                        item['तेस्रो चौमासिक	बजेट']
-                ),
-                type: 'line', // Changed from 'area' to 'line'
+                data: data.map((item) => {
+                    const value = parseFloat(
+                        item['प्रथम चौमासिक बजेट']?.toString() ||
+                            item['दोश्रो चौमासिक\tबजेट']?.toString() ||
+                            item['तेस्रो चौमासिक\tबजेट']?.toString() ||
+                            '0'
+                    )
+                    return value
+                }),
+                type: 'line',
                 marker: {
-                    enabled: true, // Enables data points markers
+                    enabled: true,
                 },
             },
         ],
-        // Optional: You can add these additional styling options
         plotOptions: {
             line: {
                 lineWidth: 2,
@@ -324,129 +368,71 @@ export const quadrimesterExpenseLineChart = (
 
 export const quarterlyBudgetAnalysis = (
     data: any[],
-    quarter: string,
     analysisType: string = 'budget'
 ): Highcharts.Options => {
-    const sectors = [
-        {
-            name: 'कर्मचारी तथा प्रशासनिक खर्च',
-            pattern: [
-                'पारिश्रमिक कर्मचारी',
-                'पारिश्रमिक पदाधिकारी',
-                'पोशाक',
-                'महंगी भत्ता',
-                'फिल्ड भत्ता',
-                'कर्मचारीको बैठक भत्ता',
-                'कर्मचारी प्रोत्साहन',
-                'पदाधिकारी बैठक भत्ता',
-                'करार सेवा शुल्क',
-            ],
-        },
-        {
-            name: 'पूर्वाधार विकास',
-            pattern: [
-                'सडक तथा पूल निर्माण',
-                'विद्युत संरचना निर्माण',
-                'तटबन्ध तथा बाँधनिर्माण',
-                'सिंचाई संरचना निर्माण',
-                'खानेपानी संरचना निर्माण',
-                'गैर आवासीय भवन निर्माण',
-                'अन्य सार्वजनिक निर्माण',
-            ],
-        },
-        {
-            name: 'कार्यालय सञ्चालन',
-            pattern: [
-                'मसलन्द तथा कार्यालय सामाग्री',
-                'इन्धन',
-                'सवारी साधन मर्मत',
-                'संचार महसुल',
-                'विविध खर्च',
-                'भ्रमण खर्च',
-                'पानी तथा बिजुली',
-            ],
-        },
-        {
-            name: 'सामाजिक विकास',
-            pattern: [
-                'शैक्षिक संस्थाहरूलाई सहायता',
-                'छात्रवृत्ति',
-                'उद्दार, राहत तथा पुनर्स्थापना',
-                'औषधीखरिद खर्च',
-                'अन्य सामाजिक सहायता',
-                'सीप विकास तथा जनचेतना',
-            ],
-        },
-        {
-            name: 'कृषि तथा पशु विकास',
-            pattern: ['पशुधन तथा बागवानी विकास'],
-        },
-    ]
+    const filteredData = data.filter((item) => item['क्र.सं.'] !== 'कुल जम्मा')
 
-    const quarterConfig = {
-        first: {
+    const allFields = [
+        {
             budgetField: 'प्रथम चौमासिक बजेट',
             expenseField: 'प्रथम चौमासिक खर्च',
             title: 'प्रथम चौमासिक',
         },
-        second: {
-            budgetField: 'दोश्रो चौमासिक\tबजेट', // Note the \t
+        {
+            budgetField: 'दोश्रो चौमासिक\tबजेट',
             expenseField: 'दोश्रो चौमासिक खर्च',
             title: 'दोश्रो चौमासिक',
         },
-        third: {
-            budgetField: 'तेस्रो चौमासिक\tबजेट', // Note the \t
+        {
+            budgetField: 'तेस्रो चौमासिक\tबजेट',
             expenseField: 'तेस्रो चौमासिक खर्च',
             title: 'तेस्रो चौमासिक',
         },
-        total: {
+        {
             budgetField: 'बजेट जम्मा',
             expenseField: 'खर्च जम्मा',
             title: 'वार्षिक',
         },
-    }
+    ]
 
-    const { budgetField, expenseField, title } =
-        quarterConfig[quarter as 'first' | 'second' | 'third' | 'total']
-    const fieldToUse = analysisType === 'budget' ? budgetField : expenseField
+    const seriesData = allFields.map(({ budgetField, expenseField, title }) => {
+        const fieldToUse =
+            analysisType === 'budget' ? budgetField : expenseField
 
-    const sectorData = sectors.map((sector) => {
-        const sectorItems = data.filter((item) =>
-            sector.pattern.some((pattern) =>
-                item.शीर्षक?.toLowerCase().includes(pattern.toLowerCase())
-            )
-        )
-
-        const value = sectorItems.reduce(
-            (sum, item) => sum + parseFloat(item[fieldToUse] || '0'),
-            0
-        )
+        const chartData = filteredData
+            .map((item) => ({
+                name: item['शीर्षक'],
+                y: parseFloat(item[fieldToUse] || '0'),
+            }))
+            .filter((item) => item.y > 0)
+            .sort((a, b) => b.y - a.y)
 
         return {
-            name: sector.name,
-            y: value,
+            name: title,
+            data: chartData,
         }
     })
 
-    const filteredSectorData = sectorData
-        .filter((sector) => sector.y > 0)
-        .sort((a, b) => b.y - a.y)
-
-    const total = filteredSectorData.reduce((sum, item) => sum + item.y, 0)
+    const totalSum = seriesData.reduce(
+        (sum, series) =>
+            sum +
+            series.data.reduce((seriesSum, item) => seriesSum + item.y, 0),
+        0
+    )
 
     return {
         chart: {
             type: 'pie',
-            height: 500,
+            height: 800,
         },
         title: {
-            text: `${title} क्षेत्रगत ${analysisType === 'budget' ? 'बजेट' : 'खर्च'} विश्लेषण`,
+            text: `${analysisType === 'budget' ? 'बजेट' : 'खर्च'} विश्लेषण`,
             style: {
                 fontSize: '18px',
             },
         },
         subtitle: {
-            text: `कुल ${analysisType === 'budget' ? 'बजेट' : 'खर्च'}: रु ${new Intl.NumberFormat('ne-NP').format(total)}`,
+            text: `कुल ${analysisType === 'budget' ? 'बजेट' : 'खर्च'}: रु ${new Intl.NumberFormat('ne-NP').format(totalSum)}`,
             style: {
                 fontSize: '14px',
             },
@@ -463,31 +449,54 @@ export const quarterlyBudgetAnalysis = (
                     },
                 },
                 showInLegend: true,
+
+                size: '75%',
             },
         },
         tooltip: {
-            headerFormat: '',
+            headerFormat: '{series.name}<br>',
             pointFormat:
                 '<b>{point.name}</b><br>' +
                 `${analysisType === 'budget' ? 'बजेट' : 'खर्च'}: रु {point.y:,.0f}<br>` +
                 'प्रतिशत: {point.percentage:.1f}%',
         },
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            itemStyle: {
-                fontSize: '11px',
-            },
-        },
-        series: [
-            {
-                name: analysisType === 'budget' ? 'बजेट' : 'खर्च',
-                data: filteredSectorData,
-                type: 'pie',
-            },
+
+        series: seriesData.map((series) => ({
+            name: series.name,
+            type: 'pie',
+            data: series.data,
+        })),
+        colors: [
+            '#2563eb',
+            '#16a34a',
+            '#dc2626',
+            '#ea580c',
+            '#7c3aed',
+            '#059669',
+            '#d97706',
+            '#7c2d12',
+            '#4338ca',
+            '#be185d',
         ],
-        colors: ['#2563eb', '#16a34a', '#dc2626', '#ea580c', '#7c3aed'],
+        responsive: {
+            rules: [
+                {
+                    condition: {
+                        maxWidth: 500,
+                    },
+                    chartOptions: {
+                        chart: {
+                            height: 1600,
+                        },
+                        plotOptions: {
+                            pie: {
+                                size: '50%',
+                            },
+                        },
+                    },
+                },
+            ],
+        },
     }
 }
 

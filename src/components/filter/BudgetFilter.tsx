@@ -1,6 +1,6 @@
 import { CITIES } from '@/constant/cities'
 import { TOPICS } from '@/constant/topics'
-import { Card, Flex, Select, Button, Checkbox, Divider } from 'antd'
+import { Card, Flex, Select, Button, Checkbox } from 'antd'
 import { Controller, useForm } from 'react-hook-form'
 import { useSearchParams } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -34,10 +34,7 @@ export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
     const months = watch('months')
     const उपशीर्षक = watch('उपशीर्षक')
 
-    const topicsOptions = TOPICS.map((topic) => ({
-        label: topic.replace('_', ' '),
-        value: topic,
-    }))
+    const topicsOptions = TOPICS
 
     const citiesOptions = CITIES.map((city) => ({
         label: city,
@@ -314,17 +311,16 @@ export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
                             />
                         </Flex>
                     </Flex>
-                    <Flex vertical gap={4}>
+                    <Flex vertical gap={16}>
                         <Button type="primary" htmlType="submit">
                             Filter
                         </Button>
-                        <Divider />
                         <Button
                             type="default"
                             onClick={() => {
                                 setSearchParams({
                                     ...searchParams,
-                                    topic: TOPICS[0],
+                                    topic: TOPICS[0].value,
                                     cities: CITIES[0],
                                     months: MONTHS[0],
                                     उपशीर्षक: 'all',
@@ -334,8 +330,7 @@ export const BudgetFilter = ({ onClose }: { onClose?: () => void }) => {
                         >
                             Default
                         </Button>
-                        <Divider />
-                        {matches && <GuideSection />}
+                        {matches && <GuideSection category={TOPICS[0].value} />}
                     </Flex>
                 </Flex>
             </form>
