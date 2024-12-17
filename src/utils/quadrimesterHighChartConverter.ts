@@ -695,11 +695,41 @@ export const quadrimesterExpenseCityTable = (
                 dataMap.set(key, {})
             }
 
-            // Set budget and expense values
-            dataMap.get(key)['budget'] =
-                parseFloat(item['प्रथम चौमासिक बजेट']) || 0
-            dataMap.get(key)['expense'] =
-                parseFloat(item['प्रथम चौमासिक खर्च']) || 0
+            // Set budget and expense values for both quadrimesters
+            const currentData = dataMap.get(key)
+            currentData['first_budget'] = parseFloat(
+                item['प्रथम चौमासिक बजेट'] || '0'
+            )
+            currentData['second_budget'] = parseFloat(
+                item['दोश्रो चौमासिक\tबजेट'] || '0'
+            )
+            currentData['third_budget'] = parseFloat(
+                item['तेस्रो चौमासिक\tबजेट'] || '0'
+            )
+            currentData['first_expense'] = parseFloat(
+                item['प्रथम चौमासिक खर्च'] || '0'
+            )
+            currentData['second_expense'] = parseFloat(
+                item['दोश्रो चौमासिक खर्च'] || '0'
+            )
+            currentData['third_expense'] = parseFloat(
+                item['तेस्रो चौमासिक खर्च'] || '0'
+            )
+            currentData['total_budget'] = parseFloat(item['बजेट जम्मा'] || '0')
+            currentData['total_expense'] = parseFloat(item['खर्च जम्मा'] || '0')
+
+            // Calculate the budget and expense totals
+            currentData['budget'] =
+                currentData['first_budget'] +
+                currentData['second_budget'] +
+                currentData['third_budget'] +
+                currentData['total_budget']
+
+            currentData['expense'] =
+                currentData['first_expense'] +
+                currentData['second_expense'] +
+                currentData['third_expense'] +
+                currentData['total_expense']
         }
     })
 
@@ -772,20 +802,49 @@ export const quadrimesterYearTable = (data: any[], selectedYears: string[]) => {
                 dataMap.set(key, {})
             }
 
-            // Set budget and expense values
-            dataMap.get(key)['budget'] =
-                parseFloat(item['प्रथम चौमासिक बजेट']) || 0
-            dataMap.get(key)['expense'] =
-                parseFloat(item['प्रथम चौमासिक खर्च']) || 0
+            // Set budget and expense values for both quadrimesters
+            const currentData = dataMap.get(key)
+            currentData['first_budget'] = parseFloat(
+                item['प्रथम चौमासिक बजेट'] || '0'
+            )
+            currentData['second_budget'] = parseFloat(
+                item['दोश्रो चौमासिक\tबजेट'] || '0'
+            )
+            currentData['third_budget'] = parseFloat(
+                item['तेस्रो चौमासिक\tबजेट'] || '0'
+            )
+            currentData['first_expense'] = parseFloat(
+                item['प्रथम चौमासिक खर्च'] || '0'
+            )
+            currentData['second_expense'] = parseFloat(
+                item['दोश्रो चौमासिक खर्च'] || '0'
+            )
+            currentData['third_expense'] = parseFloat(
+                item['तेस्रो चौमासिक खर्च'] || '0'
+            )
+            currentData['total_budget'] = parseFloat(item['बजेट जम्मा'] || '0')
+            currentData['total_expense'] = parseFloat(item['खर्च जम्मा'] || '0')
+
+            // Calculate the budget and expense totals
+            currentData['budget'] =
+                currentData['first_budget'] +
+                currentData['second_budget'] +
+                currentData['third_budget'] +
+                currentData['total_budget']
+
+            currentData['expense'] =
+                currentData['first_expense'] +
+                currentData['second_expense'] +
+                currentData['third_expense'] +
+                currentData['total_expense']
         }
     })
 
-    // Create columns data structure
+    // Rest of the code remains the same...
     const columns: Record<string, any[]> = {
         title: uniqueTitles,
     }
 
-    // Generate columns for each selected year
     selectedYears.forEach((year) => {
         columns[`budget_${year}`] = uniqueTitles.map((title) => {
             const key = `${title}_${year}`
