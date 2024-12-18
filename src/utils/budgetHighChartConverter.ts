@@ -678,7 +678,7 @@ export const wardWiseBudget = (data: BudgetExpenseProps[]) => {
     const wards = [
         ...new Set(
             data.map((item) =>
-                item['बजेट उपशीर्षक नाम'].includes('लेकवेशी नगरपालिकावडा नं.')
+                item['बजेट उपशीर्षक नाम'].includes('नगरपालिकावडा नं.')
                     ? item['बजेट उपशीर्षक नाम']
                     : null
             )
